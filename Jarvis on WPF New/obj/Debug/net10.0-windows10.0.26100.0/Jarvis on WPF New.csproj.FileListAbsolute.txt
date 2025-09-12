@@ -1,0 +1,37 @@
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\MainWindow.g.cs
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\App.g.cs
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New_MarkupCompile.cache
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New_MarkupCompile.lref
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.csproj.AssemblyReference.cache
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\libgcc_s_seh-1.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\libstdc++-6.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\libvosk.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\libwinpthread-1.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.exe
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.deps.json
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.runtimeconfig.json
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.pdb
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.Asio.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.Core.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.Midi.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.Wasapi.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.WinForms.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\NAudio.WinMM.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Newtonsoft.Json.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Vosk.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\Microsoft.Windows.SDK.NET.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\bin\Debug\net10.0-windows10.0.26100.0\WinRT.Runtime.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\MainWindow.baml
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.g.resources
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.GeneratedMSBuildEditorConfig.editorconfig
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.AssemblyInfoInputs.cache
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.AssemblyInfo.cs
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.csproj.CoreCompileInputs.cache
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis o.BCA248BE.Up2Date
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\refint\Jarvis on WPF New.dll
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.pdb
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.genruntimeconfig.cache
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\ref\Jarvis on WPF New.dll

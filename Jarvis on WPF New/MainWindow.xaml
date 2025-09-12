@@ -1,0 +1,41 @@
+﻿<Window x:Class="Jarvis_on_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Jarvis_on_WPF"
+        mc:Ignorable="d"
+        Title="Jarvis" MinHeight="450" MinWidth="800" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="33" />
+            <RowDefinition Height="33" />
+            <RowDefinition Height="300" />
+            <RowDefinition Height="33" />
+        </Grid.RowDefinitions>
+
+        <!-- Top menu -->
+        <Menu Height="25" Grid.Row="0" Grid.ColumnSpan="4">
+            <MenuItem Header="Приложение" FontSize="20px" FontFamily="Times New Roman" >
+                <MenuItem x:Name="Exit_Program" x:FieldModifier="public" Header="Выход" Click="Exit_Program_Click" FontSize="15px" FontFamily="Times new Roman" />
+                <MenuItem x:Name="Close_Window" x:FieldModifier="public" Header="Закрыть окно" Click="Close_Window_Click" FontSize="15px" FontFamily="Times new Roman" />
+            </MenuItem>
+        </Menu>
+
+        <!-- Greeting label -->
+        <TextBlock x:Name="GreetingLabel" Text="Jarvis" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-40,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
+
+        <!-- Recognized label -->
+        <TextBlock x:Name="RecognizedLabel" Text="Recognized" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-170,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
+
+        <!-- Recognized text -->
+        <TextBox x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0" />
+    </Grid>
+</Window>
