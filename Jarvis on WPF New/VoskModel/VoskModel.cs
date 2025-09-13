@@ -1,35 +1,95 @@
-﻿using Jarvis_on_WPF.JarvisAudioResponses;
-using NAudio.Wave;
-using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
+﻿// Standart usings
 using System.IO;
 using System.Text;
-using System.Threading;
+using System.Windows;
+using System.Diagnostics;
+
+// Installed usings
 using Vosk;
+using NAudio.Wave;
+using Newtonsoft.Json;
+
+// Project usings
+using Jarvis_on_WPF.Json;
+using Jarvis_on_WPF.JarvisAudioResponses;
+
 
 namespace WorkWithVoskModel
 {
-    class VoskModel
+    class VoskModel : IVoskModel
     {
-        private static Model model;
-        private static VoskRecognizer recognizer;
-        private static WaveInEvent waveIn;
-        // private static Audio.Audio audio;
-        private static Stopwatch silenceTimer;
-        private static StringBuilder currentText = new StringBuilder();
+        // Vosk
+        private string _modelPath;
+        private static Model? model;
+        private static VoskRecognizer? recognizer;
 
-        public static void Main()
+        // Get audio from microphone
+        private static WaveInEvent? waveIn;
+
+        // Diagnostic tools
+        private static Stopwatch? silenceTimer;
+        private static StringBuilder? currentText;
+
+        // Play Jarvis responses
+        private static Audio? audio;
+
+        // Json classes
+        private readonly IJson _json;
+        private readonly IJson _jsonWithPathConsts;
+
+        // Objects for deserialization
+        private readonly PathsClass _pathsClass;
+        private readonly DataClass _constsClass;
+
+        public VoskModel()
+        {
+            // Path consts
+            _jsonWithPathConsts = new JsonClass
+            {
+                FilePath = JsonClass.jsonFileWithPathConsts
+            };
+
+            // Deserialized class with path consts
+            _pathsClass = new PathsClass(); // Path const class
+            _pathsClass = _jsonWithPathConsts.ReadJson<PathsClass>(); // Reading data from json file
+
+            // Programm consts
+            _json = new JsonClass
+            {
+                FilePath = _pathsClass.PathConsts![0].DataJsonPathConst!
+            };
+
+            // Deserialized class with programm consts
+            _constsClass = new DataClass(); // Programm const class
+            _constsClass = _json.ReadJson<DataClass>(); // Reading data from json file
+
+            // Vosk model
+            _modelPath = string.Empty;
+
+            // Select vosk model path
+            switch (_constsClass.AccurateRecognitionMode!)
+            {
+                case true:
+                    _modelPath = _pathsClass.PathConsts![0].AccurateModelPathConst!;
+                    break;
+                case false:
+                    _modelPath = _pathsClass.PathConsts![0].NotAccurateModelPathConst!;
+                    break;
+            }
+        }
+
+        public void StartListening()
         {
             try
             {
-                // Variables
-                string modelPath = "./vosk-model-ru-0.42";
-
                 // Проверяем существование модели
-                if (!Directory.Exists(modelPath))
+                if (!Directory.Exists(_modelPath))
                 {
-                    Console.WriteLine($"Ошибка: Модель не найдена по пути: {modelPath}");
+                    if (_constsClass.DebugMode! == true)
+                    {
+                        MessageBox.Show($"Ошибка: Модель не найдена по пути: {modelPath}");
+                    }
+                    MessageBox.Show($"Ошибка: Модель не найдена по пути: {modelPath}");
                     Console.WriteLine("Убедитесь, что модель vosk-model-small-ru-0.22 скачана и распакована");
                     return;
                 }
