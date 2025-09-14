@@ -1,4 +1,10 @@
 {
   "DebugMode": true,
-  "AccurateRecognitionMode": true
+  "AccurateRecognitionMode": false,
+  "AccurateRecognitionModelName": "vosk-model-ru-0.42",
+  "NotAccurateRecognitionModelName": "vosk-model-small-ru-0.22",
+  "URLForDownloadVoskModel": "https://alphacephei.com/vosk/models",
+  "SampleRate": 16000,
+  "BufferMilliseconds": 50,
+  "NumberOfBuffers": 2
 }

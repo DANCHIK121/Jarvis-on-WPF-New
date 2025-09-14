@@ -5,6 +5,6 @@
         string FilePath { get; set; }
 
         public T ReadJson<T>();
-        public void WriteJson(DataClass deserializeClass);
+        public void WriteJson<T>(T deserializeClass);
     }
 }

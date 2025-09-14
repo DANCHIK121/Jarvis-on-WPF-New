@@ -19,6 +19,7 @@
             <RowDefinition Height="33" />
             <RowDefinition Height="300" />
             <RowDefinition Height="33" />
+            <RowDefinition Height="33" />
         </Grid.RowDefinitions>
 
         <!-- Top menu -->
@@ -36,6 +37,12 @@
         <TextBlock x:Name="RecognizedLabel" Text="Recognized" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-170,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
 
         <!-- Recognized text -->
-        <TextBox x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0" />
+        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="2"
+        Padding="1"
+        Background="#FFF5F5F5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Height="300" Width="620" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" >
+                <TextBlock x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0"  />
+            </ScrollViewer>
+        </Border>
     </Grid>
 </Window>

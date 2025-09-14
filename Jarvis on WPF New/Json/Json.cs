@@ -10,11 +10,17 @@ using Newtonsoft.Json.Serialization;
 namespace Jarvis_on_WPF.Json
 {
     #region Programm Consts
-    // Main serialization class
-    class DataClass
+    // Program consts
+    class ProgramConstsClass
     {
         public bool? DebugMode { get; set; }
         public bool? AccurateRecognitionMode { get; set; }
+        public string? AccurateRecognitionModelName { get; set; }
+        public string? NotAccurateRecognitionModelName { get; set; }
+        public string? URLForDownloadVoskModel { get; set; }
+        public int? SampleRate {  get; set; }
+        public int? BufferMilliseconds { get; set; }
+        public int? NumberOfBuffers { get; set; }
     }
     #endregion
 
@@ -38,7 +44,9 @@ namespace Jarvis_on_WPF.Json
     internal class JsonClass : IJson
     {
         private string _filePath; // Json file path
-        public static string jsonFileWithPathConsts = @"./Json/PathConsts.json"; // Json file path
+
+        public static string _jsonFileWithPathConsts = @"./Json/PathConsts.json"; // Json file path
+        public static string _jsonFileWithProgramConsts = @"./Json/ProgramConsts.json"; // Json file path
 
         public JsonClass()
         {
@@ -89,7 +97,7 @@ namespace Jarvis_on_WPF.Json
             }
         }
 
-        async public void WriteJson(DataClass deserializeClass)
+        async public void WriteJson<T>(T deserializeClass)
         {
             using FileStream fileStream = new(_filePath, FileMode.Open);
             using StreamWriter streamWriter = new(fileStream);

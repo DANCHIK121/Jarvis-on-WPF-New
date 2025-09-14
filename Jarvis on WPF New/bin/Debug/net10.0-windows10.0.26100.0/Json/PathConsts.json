@@ -2,7 +2,9 @@
   "PathConsts": 
   [
     {
-      "ModelPathConst": "./Json/ProgramConsts.json"
+      "DataJsonPathConst": "./Json/ProgramConsts.json",
+      "AccurateModelPathConst": "./Vosk_models/vosk-model-ru-0.42",
+      "NotAccurateModelPathConst": "./Vosk_models/vosk-model-small-ru-0.22/vosk-model-small-ru-0.22"
     }
   ]
 }

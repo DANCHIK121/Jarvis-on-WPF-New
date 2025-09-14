@@ -14,24 +14,26 @@ using Jarvis_on_WPF.Json;
 using Jarvis_on_WPF.JarvisAudioResponses;
 
 
-namespace WorkWithVoskModel
+namespace Jarvis_on_WPF_New.VoskModel
 {
     class VoskModel : IVoskModel
     {
         // Vosk
         private string _modelPath;
-        private static Model? model;
-        private static VoskRecognizer? recognizer;
+        private static Model? _model;
+        private static VoskRecognizer? _recognizer;
 
         // Get audio from microphone
-        private static WaveInEvent? waveIn;
+        private static WaveInEvent? _waveIn;
 
         // Diagnostic tools
-        private static Stopwatch? silenceTimer;
+        private static Stopwatch? _silenceTimer;
+        private static Stopwatch? _voskModelDownloadTimer;
+
         private static StringBuilder? currentText;
 
         // Play Jarvis responses
-        private static Audio? audio;
+        private static Audio? _audioJarvisResponses;
 
         // Json classes
         private readonly IJson _json;
@@ -39,29 +41,36 @@ namespace WorkWithVoskModel
 
         // Objects for deserialization
         private readonly PathsClass _pathsClass;
-        private readonly DataClass _constsClass;
+        private readonly ProgramConstsClass _constsClass;
+
+        // Event publisher
+        private VoskModelEventsForNews? _voskModelNewsPublisher;
+        private VoskModelEventsForTextChattingInThreads? _voskModelEventsForTextChattingInThreads;
 
         public VoskModel()
         {
+            // Init events handler
+            _voskModelNewsPublisher = new VoskModelEventsForNews();
+
             // Path consts
             _jsonWithPathConsts = new JsonClass
             {
-                FilePath = JsonClass.jsonFileWithPathConsts
+                FilePath = JsonClass._jsonFileWithPathConsts,
+            };
+
+            // Programm consts
+            _json = new JsonClass
+            {
+                FilePath = JsonClass._jsonFileWithProgramConsts,
             };
 
             // Deserialized class with path consts
             _pathsClass = new PathsClass(); // Path const class
             _pathsClass = _jsonWithPathConsts.ReadJson<PathsClass>(); // Reading data from json file
 
-            // Programm consts
-            _json = new JsonClass
-            {
-                FilePath = _pathsClass.PathConsts![0].DataJsonPathConst!
-            };
-
             // Deserialized class with programm consts
-            _constsClass = new DataClass(); // Programm const class
-            _constsClass = _json.ReadJson<DataClass>(); // Reading data from json file
+            _constsClass = new ProgramConstsClass(); // Programm const class
+            _constsClass = _json.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
             // Vosk model
             _modelPath = string.Empty;
@@ -76,72 +85,101 @@ namespace WorkWithVoskModel
                     _modelPath = _pathsClass.PathConsts![0].NotAccurateModelPathConst!;
                     break;
             }
+
+            // Diagnostic
+            _silenceTimer = new Stopwatch();
+            _voskModelDownloadTimer = new Stopwatch();
+
+            // Init Jarvis responses 
+            _audioJarvisResponses = new Audio();
+
+            // Init wave capture
+            _waveIn = new WaveInEvent()
+            {
+                WaveFormat = new WaveFormat((int)_constsClass.SampleRate!, 1),
+                BufferMilliseconds = (int)_constsClass.BufferMilliseconds!,
+                NumberOfBuffers = (int)_constsClass.NumberOfBuffers!,
+            };
+        }
+
+        public ref VoskModelEventsForNews GetVoskModelEventsForNews
+        {
+            get { return ref _voskModelNewsPublisher!; }
+        }
+
+        public void DownloadModel()
+        {
+            // Check vock model exists in path
+            if (!Directory.Exists(_modelPath))
+            {
+                if (_constsClass.DebugMode! == true)
+                {
+                    var temp = string.Empty;
+
+                    if (_constsClass.AccurateRecognitionMode! == true)
+                        temp = _constsClass.AccurateRecognitionModelName!;
+                    if (_constsClass.AccurateRecognitionMode! == false)
+                        temp = _constsClass.NotAccurateRecognitionModelName!;
+
+                    var resultString = ($"Ошибка: Модель не найдена по пути: {_modelPath}\n" +
+                                        $"Убедитесь, что модель {temp} скачана и распакована\n" +
+                                        $"Скачайте её с сайта {_constsClass.URLForDownloadVoskModel!}");
+
+                    _voskModelNewsPublisher!.PublishNews(resultString);
+                    MessageBox.Show(resultString);
+                }
+                return;
+            }
+
+            // Model not downloaded
+            _voskModelNewsPublisher!.PublishNews("Начата загрузка модели.");
+            _voskModelDownloadTimer?.Start();
+
+            // Init Vosk model
+            _model = new Model(_modelPath);
+            _recognizer = new VoskRecognizer(_model, 16000.0f);
+
+            // Model downloaded
+            _voskModelDownloadTimer?.Stop();
+            _voskModelNewsPublisher!.PublishNews("Модель загружена.");
+
+            // Calculate elapsed time
+            if (_constsClass.DebugMode! == true)
+            {
+                _voskModelNewsPublisher!.PublishNews($"Модель загрузилась за {_voskModelDownloadTimer?.ElapsedMilliseconds / 1000} секунд.");
+            }
         }
 
         public void StartListening()
         {
             try
             {
-                // Проверяем существование модели
-                if (!Directory.Exists(_modelPath))
-                {
-                    if (_constsClass.DebugMode! == true)
-                    {
-                        MessageBox.Show($"Ошибка: Модель не найдена по пути: {modelPath}");
-                    }
-                    MessageBox.Show($"Ошибка: Модель не найдена по пути: {modelPath}");
-                    Console.WriteLine("Убедитесь, что модель vosk-model-small-ru-0.22 скачана и распакована");
-                    return;
-                }
-
-                silenceTimer = new Stopwatch();
-
-                silenceTimer.Start();
-                // Init Vosk model
-                model = new Model(modelPath);
-                recognizer = new VoskRecognizer(model, 16000.0f);
-                silenceTimer.Stop();
-                Console.WriteLine(silenceTimer.ElapsedMilliseconds / 1000);
-
-                // Init wave capture
-                waveIn = new WaveInEvent()
-                {
-                    WaveFormat = new WaveFormat(16000, 1),
-                    BufferMilliseconds = 50,
-                    NumberOfBuffers = 2
-                };
-
-                // Init audio playing
-                // audio = new Audio.Audio();
-
-                // Init silence timer
-                //silenceTimer = new Stopwatch();
-
-                // Console settings
-                // Console.Clear();
-                Console.Title = "Jarvis - Распознавание речи";
-                Console.OutputEncoding = Encoding.UTF8;
-
-                Console.WriteLine("=== Jarvis Speech Recognition ===");
-                Console.WriteLine("Настройка микрофона...");
-
-                // Получаем список доступных устройств
+                // Count wave in devices
                 int waveInDevices = WaveInEvent.DeviceCount;
-                Console.WriteLine($"Доступных аудиоустройств: {waveInDevices}");
 
-                for (int i = 0; i < waveInDevices; i++)
+                _voskModelEventsForTextChattingInThreads!.PublishText("=== Jarvis Speech Recognition ===");
+
+                if (_constsClass.DebugMode! == true)
                 {
-                    var capabilities = WaveInEvent.GetCapabilities(i);
-                    Console.WriteLine($"Устройство {i}: {capabilities.ProductName}");
+                    _voskModelNewsPublisher!.PublishNews("Настройка микрофона...");
+
+                    // Получаем список доступных устройств
+                    Console.WriteLine($"Доступных аудиоустройств: {waveInDevices}");
+
+                    for (int i = 0; i < waveInDevices; i++)
+                    {
+                        var capabilities = WaveInEvent.GetCapabilities(i);
+                        Console.WriteLine($"Устройство {i}: {capabilities.ProductName}");
+                    }
                 }
 
                 // Write listened data to result string
-                waveIn.DataAvailable += WaveIn_DataAvailable;
-                waveIn.RecordingStopped += (s, e) => Console.WriteLine("Запись остановлена");
+                _waveIn.DataAvailable += WaveIn_DataAvailable;
+                _waveIn.RecordingStopped += (s, e) => Console.WriteLine("Запись остановлена");
 
                 // Start recording
                 Console.WriteLine("\n🎤 Начинаю запись... Говорите!");
-                waveIn.StartRecording();
+                _waveIn.StartRecording();
 
                 Console.WriteLine("\n⚡ Режимы работы:");
                 Console.WriteLine("• Говорите четко в микрофон");
@@ -159,10 +197,10 @@ namespace WorkWithVoskModel
                     }
 
                     // Проверяем таймер тишины в основном цикле
-                    if (silenceTimer.IsRunning && silenceTimer.ElapsedMilliseconds > 2000)
+                    if (_silenceTimer.IsRunning && _silenceTimer.ElapsedMilliseconds > 2000)
                     {
                         FinalizeRecognition();
-                        silenceTimer.Restart();
+                        _silenceTimer.Restart();
                     }
 
                     Thread.Sleep(100);
@@ -177,10 +215,10 @@ namespace WorkWithVoskModel
             finally
             {
                 // Cleanup
-                waveIn?.StopRecording();
-                waveIn?.Dispose();
-                recognizer?.Dispose();
-                model?.Dispose();
+                _waveIn?.StopRecording();
+                _waveIn?.Dispose();
+                _recognizer?.Dispose();
+                _model?.Dispose();
                 Console.WriteLine("Ресурсы освобождены. Выход.");
             }
         }
@@ -194,25 +232,25 @@ namespace WorkWithVoskModel
                 if (!IsAudioLoudEnough(processedAudio))
                 {
                     // Тишина - запускаем таймер
-                    if (!silenceTimer.IsRunning)
-                        silenceTimer.Start();
+                    if (!_silenceTimer.IsRunning)
+                        _silenceTimer.Start();
                     return;
                 }
 
                 // Есть звук - сбрасываем таймер
-                silenceTimer.Restart();
+                _silenceTimer.Restart();
 
                 // Передаем аудио в распознаватель
-                if (recognizer.AcceptWaveform(processedAudio, processedAudio.Length))
+                if (_recognizer!.AcceptWaveform(processedAudio, processedAudio.Length))
                 {
                     // Получаем финальный результат
-                    string resultJson = recognizer.Result();
+                    string resultJson = _recognizer.Result();
                     ProcessResult(resultJson, isFinal: true);
                 }
                 else
                 {
                     // Получаем частичный результат
-                    string partialJson = recognizer.PartialResult();
+                    string partialJson = _recognizer.PartialResult();
                     ProcessResult(partialJson, isFinal: false);
                 }
             }
@@ -258,11 +296,11 @@ namespace WorkWithVoskModel
             try
             {
                 // Принудительно получаем финальный результат
-                string finalResult = recognizer.FinalResult();
+                string finalResult = _recognizer.FinalResult();
                 ProcessResult(finalResult, isFinal: true);
 
                 // Reset recognizer
-                recognizer.Reset();
+                _recognizer.Reset();
 
                 Console.WriteLine("\n--- Готов к новой фразе ---");
             }
@@ -336,16 +374,5 @@ namespace WorkWithVoskModel
             double rms = Math.Sqrt(sum / count);
             return rms > 200; // Пониженный порог для лучшей чувствительности
         }
-    }
-
-    // JSON classes
-    public class VoskFinalResult
-    {
-        public string text { get; set; }
-    }
-
-    public class VoskPartialResult
-    {
-        public string partial { get; set; }
     }
 }
