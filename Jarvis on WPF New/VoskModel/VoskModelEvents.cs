@@ -43,7 +43,7 @@ namespace Jarvis_on_WPF_New.VoskModel
         private readonly ProgramConstsClass _programConstsClass;
 
         // Event handler
-        public event EventHandler<string>? NewsPublished;
+        public event EventHandler<string>? TextPublished;
 
         public VoskModelEventsForTextChattingInThreads()
         {
@@ -59,6 +59,6 @@ namespace Jarvis_on_WPF_New.VoskModel
         }
 
         public void PublishText(string news) => OnNewsPublished(news);
-        protected virtual void OnNewsPublished(string news) => NewsPublished?.Invoke(this, news);
+        protected virtual void OnNewsPublished(string news) => TextPublished?.Invoke(this, news);
     }
 }

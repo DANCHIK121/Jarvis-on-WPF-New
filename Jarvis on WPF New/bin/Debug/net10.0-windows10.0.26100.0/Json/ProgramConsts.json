@@ -6,5 +6,6 @@
   "URLForDownloadVoskModel": "https://alphacephei.com/vosk/models",
   "SampleRate": 16000,
   "BufferMilliseconds": 50,
-  "NumberOfBuffers": 2
+  "NumberOfBuffers": 2,
+  "SilenceTimerTimeoutInMilliSeconds": 2000
 }

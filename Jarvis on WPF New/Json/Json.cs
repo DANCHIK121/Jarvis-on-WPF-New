@@ -21,6 +21,7 @@ namespace Jarvis_on_WPF.Json
         public int? SampleRate {  get; set; }
         public int? BufferMilliseconds { get; set; }
         public int? NumberOfBuffers { get; set; }
+        public int? SilenceTimerTimeoutInMilliSeconds { get; set; }
     }
     #endregion
 

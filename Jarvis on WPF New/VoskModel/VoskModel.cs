@@ -16,7 +16,7 @@ using Jarvis_on_WPF.JarvisAudioResponses;
 
 namespace Jarvis_on_WPF_New.VoskModel
 {
-    class VoskModel : IVoskModel
+    partial class VoskModel : IVoskModel
     {
         // Vosk
         private string _modelPath;
@@ -49,8 +49,11 @@ namespace Jarvis_on_WPF_New.VoskModel
 
         public VoskModel()
         {
+            currentText = new StringBuilder();
+
             // Init events handler
             _voskModelNewsPublisher = new VoskModelEventsForNews();
+            _voskModelEventsForTextChattingInThreads = new VoskModelEventsForTextChattingInThreads();
 
             // Path consts
             _jsonWithPathConsts = new JsonClass
@@ -100,11 +103,34 @@ namespace Jarvis_on_WPF_New.VoskModel
                 BufferMilliseconds = (int)_constsClass.BufferMilliseconds!,
                 NumberOfBuffers = (int)_constsClass.NumberOfBuffers!,
             };
+
+            // Write listened data to result string
+            _waveIn.DataAvailable += WaveIn_DataAvailable!;
+            if (_constsClass!.DebugMode == true)
+            {
+                _waveIn.RecordingStopped += (s, e) => _voskModelNewsPublisher.PublishNews("Запись остановлена");
+            }
+        }
+
+        ~VoskModel()
+        {
+            // Cleanup
+            _waveIn?.StopRecording();
+            _waveIn?.Dispose();
+            _recognizer?.Dispose();
+            _model?.Dispose();
+            if (_constsClass.DebugMode! == true)
+                _voskModelNewsPublisher!.PublishNews("Ресурсы освобождены. Выход.");
         }
 
         public ref VoskModelEventsForNews GetVoskModelEventsForNews
         {
             get { return ref _voskModelNewsPublisher!; }
+        }
+
+        public ref VoskModelEventsForTextChattingInThreads GetVoskModelEventsForTextChattingInThreads
+        {
+            get { return ref _voskModelEventsForTextChattingInThreads!; }
         }
 
         public void DownloadModel()
@@ -154,6 +180,12 @@ namespace Jarvis_on_WPF_New.VoskModel
         {
             try
             {
+                if (_model == null || _recognizer == null)
+                {
+                    _voskModelEventsForTextChattingInThreads!.PublishText("❌ Модель не загружена!");
+                    return;
+                }
+
                 // Count wave in devices
                 int waveInDevices = WaveInEvent.DeviceCount;
 
@@ -161,46 +193,37 @@ namespace Jarvis_on_WPF_New.VoskModel
 
                 if (_constsClass.DebugMode! == true)
                 {
-                    _voskModelNewsPublisher!.PublishNews("Настройка микрофона...");
-
-                    // Получаем список доступных устройств
-                    Console.WriteLine($"Доступных аудиоустройств: {waveInDevices}");
+                    _voskModelNewsPublisher!.PublishNews($"Настройка микрофона...\nДоступных аудиоустройств: {waveInDevices}");
 
                     for (int i = 0; i < waveInDevices; i++)
                     {
                         var capabilities = WaveInEvent.GetCapabilities(i);
-                        Console.WriteLine($"Устройство {i}: {capabilities.ProductName}");
+                        _voskModelNewsPublisher!.PublishNews($"Устройство {i}: {capabilities.ProductName}");
+                    }
+
+                    if (waveInDevices == 0)
+                    {
+                        _voskModelEventsForTextChattingInThreads!.PublishText("❌ Микрофон не найден!");
+                        return;
                     }
                 }
 
-                // Write listened data to result string
-                _waveIn.DataAvailable += WaveIn_DataAvailable;
-                _waveIn.RecordingStopped += (s, e) => Console.WriteLine("Запись остановлена");
-
                 // Start recording
-                Console.WriteLine("\n🎤 Начинаю запись... Говорите!");
-                _waveIn.StartRecording();
+                _voskModelEventsForTextChattingInThreads.PublishText("🎤 Начинаю запись... Говорите!");
+                _waveIn!.StartRecording();
 
-                Console.WriteLine("\n⚡ Режимы работы:");
-                Console.WriteLine("• Говорите четко в микрофон");
-                Console.WriteLine("• Пауза 2 секунды - финализация фразы");
-                Console.WriteLine("• Press 'Q' to quit\n");
+                _voskModelEventsForTextChattingInThreads.PublishText("\n⚡ Режимы работы:");
+                _voskModelEventsForTextChattingInThreads.PublishText("• Говорите четко в микрофон");
+                _voskModelEventsForTextChattingInThreads.PublishText("• Пауза 2 секунды - финализация фразы");
 
                 // Main loop
                 while (true)
                 {
-                    if (Console.KeyAvailable)
-                    {
-                        var key = Console.ReadKey(true);
-                        if (key.Key == ConsoleKey.Q)
-                            break;
-                    }
-
-                    // Проверяем таймер тишины в основном цикле
-                    if (_silenceTimer.IsRunning && _silenceTimer.ElapsedMilliseconds > 2000)
+                    // Check silence timer in main loop
+                    if (_silenceTimer!.IsRunning && _silenceTimer!.ElapsedMilliseconds > _constsClass.SilenceTimerTimeoutInMilliSeconds!)
                     {
                         FinalizeRecognition();
-                        _silenceTimer.Restart();
+                        _silenceTimer!.Restart();
                     }
 
                     Thread.Sleep(100);
@@ -209,8 +232,10 @@ namespace Jarvis_on_WPF_New.VoskModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Критическая ошибка: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                // Print critical error
+                _voskModelEventsForTextChattingInThreads!.PublishText($"❌ Критическая ошибка!");
+                if (_constsClass.DebugMode! == true)
+                    _voskModelNewsPublisher!.PublishNews($"StackTrace: {ex.StackTrace}");
             }
             finally
             {
@@ -219,11 +244,12 @@ namespace Jarvis_on_WPF_New.VoskModel
                 _waveIn?.Dispose();
                 _recognizer?.Dispose();
                 _model?.Dispose();
-                Console.WriteLine("Ресурсы освобождены. Выход.");
+                if (_constsClass.DebugMode! == true)
+                    _voskModelNewsPublisher!.PublishNews("Ресурсы освобождены. Выход.");
             }
         }
 
-        private static void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
+        private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
             try
             {
@@ -231,37 +257,39 @@ namespace Jarvis_on_WPF_New.VoskModel
 
                 if (!IsAudioLoudEnough(processedAudio))
                 {
-                    // Тишина - запускаем таймер
-                    if (!_silenceTimer.IsRunning)
+                    // Silence - start timer
+                    if (!_silenceTimer!.IsRunning)
                         _silenceTimer.Start();
                     return;
                 }
 
-                // Есть звук - сбрасываем таймер
-                _silenceTimer.Restart();
+                // Sound - reset timer
+                _silenceTimer!.Restart();
 
-                // Передаем аудио в распознаватель
+                // Send audio to recognizer
                 if (_recognizer!.AcceptWaveform(processedAudio, processedAudio.Length))
                 {
-                    // Получаем финальный результат
+                    // Get final result
                     string resultJson = _recognizer.Result();
                     ProcessResult(resultJson, isFinal: true);
                 }
                 else
                 {
-                    // Получаем частичный результат
+                    // Get partial result
                     string partialJson = _recognizer.PartialResult();
                     ProcessResult(partialJson, isFinal: false);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка обработки аудио: {ex.Message}");
+                if (_constsClass!.DebugMode == true) _voskModelNewsPublisher!.PublishNews($"Ошибка обработки аудио: {ex.Message}");
+                MessageBox.Show($"Ошибка обработки аудио: {ex.Message}");
             }
         }
 
-        private static void ProcessResult(string json, bool isFinal)
+        private void ProcessResult(string json, bool isFinal)
         {
+            // Check json data
             if (string.IsNullOrEmpty(json) || json == "{\"partial\" : \"\"}")
                 return;
 
@@ -272,8 +300,10 @@ namespace Jarvis_on_WPF_New.VoskModel
                     var result = JsonConvert.DeserializeObject<VoskFinalResult>(json);
                     if (!string.IsNullOrEmpty(result?.text))
                     {
-                        Console.WriteLine($"\n🎯 ФИНАЛЬНО: {result.text}");
-                        currentText.Clear();
+                        // Send final text
+                        _voskModelEventsForTextChattingInThreads!.PublishText($"\n🎯 ФИНАЛЬНО: {result.text}");
+                        VoskModelCommandExecution.Execute(result.text);
+                        currentText!.Clear();
                     }
                 }
                 else
@@ -281,98 +311,37 @@ namespace Jarvis_on_WPF_New.VoskModel
                     var result = JsonConvert.DeserializeObject<VoskPartialResult>(json);
                     if (!string.IsNullOrEmpty(result?.partial))
                     {
-                        Console.Write($"\r🔍 Распознаю: {result.partial}          ");
+                        // Send partial text
+                        _voskModelEventsForTextChattingInThreads!.PublishText($"\r🔍 Распознаю: {result.partial}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nОшибка парсинга JSON: {ex.Message}");
+                if (_constsClass.DebugMode! == true)
+                    _voskModelNewsPublisher!.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
+                MessageBox.Show($"Ошибка парсинга JSON: {ex.Message}");
             }
         }
 
-        private static void FinalizeRecognition()
+        private void FinalizeRecognition()
         {
             try
             {
-                // Принудительно получаем финальный результат
-                string finalResult = _recognizer.FinalResult();
+                // Forced get final result
+                string finalResult = _recognizer!.FinalResult();
                 ProcessResult(finalResult, isFinal: true);
 
                 // Reset recognizer
                 _recognizer.Reset();
 
-                Console.WriteLine("\n--- Готов к новой фразе ---");
+                _voskModelEventsForTextChattingInThreads!.PublishText("\n--- Готов к новой фразе ---");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при финализации: {ex.Message}");
+                if (_constsClass.DebugMode! == true)
+                    _voskModelNewsPublisher!.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
             }
-        }
-
-        private static byte[] EnhanceAudioQuality(byte[] buffer, int length)
-        {
-            if (length == 0) return buffer;
-
-            short[] samples = new short[length / 2];
-            Buffer.BlockCopy(buffer, 0, samples, 0, length);
-
-            // Шумоподавление
-            for (int i = 0; i < samples.Length; i++)
-            {
-                if (Math.Abs(samples[i]) < 300) // Более агрессивное шумоподавление
-                    samples[i] = 0;
-            }
-
-            NormalizeAudio(samples);
-
-            byte[] processed = new byte[length];
-            Buffer.BlockCopy(samples, 0, processed, 0, length);
-            return processed;
-        }
-
-        private static void NormalizeAudio(short[] samples)
-        {
-            short maxAmplitude = 0;
-            foreach (var sample in samples)
-            {
-                if (Math.Abs(sample) > maxAmplitude)
-                    maxAmplitude = Math.Abs(sample);
-            }
-
-            if (maxAmplitude > 1000 && maxAmplitude < 10000)
-            {
-                float gain = 8000f / maxAmplitude;
-                for (int i = 0; i < samples.Length; i++)
-                {
-                    int amplified = (int)(samples[i] * gain);
-                    samples[i] = (short)Math.Clamp(amplified, short.MinValue, short.MaxValue);
-                }
-            }
-        }
-
-        private static bool IsAudioLoudEnough(byte[] audio)
-        {
-            if (audio.Length == 0) return false;
-
-            short[] samples = new short[audio.Length / 2];
-            Buffer.BlockCopy(audio, 0, samples, 0, audio.Length);
-
-            double sum = 0;
-            int count = 0;
-            foreach (var sample in samples)
-            {
-                if (Math.Abs(sample) > 100) // Игнорируем совсем тихие samples
-                {
-                    sum += sample * sample;
-                    count++;
-                }
-            }
-
-            if (count == 0) return false;
-
-            double rms = Math.Sqrt(sum / count);
-            return rms > 200; // Пониженный порог для лучшей чувствительности
         }
     }
 }

@@ -12,6 +12,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -23,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <!-- Top menu -->
-        <Menu Height="25" Grid.Row="0" Grid.ColumnSpan="4">
+        <Menu Height="25" Grid.Row="0" Grid.ColumnSpan="10">
             <MenuItem Header="Приложение" FontSize="20px" FontFamily="Times New Roman" >
                 <MenuItem x:Name="Exit_Program" x:FieldModifier="public" Header="Выход" Click="Exit_Program_Click" FontSize="15px" FontFamily="Times new Roman" />
                 <MenuItem x:Name="Close_Window" x:FieldModifier="public" Header="Закрыть окно" Click="Close_Window_Click" FontSize="15px" FontFamily="Times new Roman" />
@@ -37,12 +38,8 @@
         <TextBlock x:Name="RecognizedLabel" Text="Recognized" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-170,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
 
         <!-- Recognized text -->
-        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="2"
-        Padding="1"
-        Background="#FFF5F5F5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,0,0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Height="300" Width="620" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" >
-                <TextBlock x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0"  />
-            </ScrollViewer>
+        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="2" Padding="1" Background="#FFF5F5F5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,0,0,0" Width="610">
+        <TextBox x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" />
         </Border>
     </Grid>
 </Window>
