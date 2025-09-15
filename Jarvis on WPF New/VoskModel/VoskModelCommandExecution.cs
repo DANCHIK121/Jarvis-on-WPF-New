@@ -1,19 +1,29 @@
-﻿
+﻿// Standart usings
 using System.Windows.Forms;
+
+// Project usings
+using Jarvis_on_WPF.JarvisAudioResponses;
 
 namespace Jarvis_on_WPF_New.VoskModel
 {
     internal class VoskModelCommandExecution
     {
-        public static void Execute(string command)
+        private readonly IAudio? _jarvisAudioResponses;
+
+        public VoskModelCommandExecution()
+        {
+            _jarvisAudioResponses = new Audio(AudioModes.JarvisGoodbye);
+        }
+
+        public void Execute(string command)
         {
             command = command.ToLower();
 
             switch (command)
             {
                 case "выход":
-                    MessageBox.Show("ff");
-                    Application.Exit();
+                    _jarvisAudioResponses!.Play();
+                    // Environment.Exit(0);
                     break;
             }
         }

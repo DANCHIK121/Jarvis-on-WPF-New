@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Jarvis_on_WPF_New.VoskModel
+﻿namespace Jarvis_on_WPF_New.VoskModel
 {
     partial class VoskModel
     {

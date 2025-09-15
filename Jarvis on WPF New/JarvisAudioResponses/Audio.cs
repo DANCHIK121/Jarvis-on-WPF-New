@@ -1,7 +1,6 @@
 ﻿// System usings
-
-using System.Diagnostics.CodeAnalysis;
 using System.Media;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Jarvis_on_WPF.JarvisAudioResponses
 {

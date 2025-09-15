@@ -7,5 +7,6 @@
   "SampleRate": 16000,
   "BufferMilliseconds": 50,
   "NumberOfBuffers": 2,
-  "SilenceTimerTimeoutInMilliSeconds": 2000
+  "SilenceTimerTimeoutInMilliSeconds": 2000,
+  "EpochCount": 1000
 }

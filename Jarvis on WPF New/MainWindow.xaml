@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Jarvis_on_WPF"
         mc:Ignorable="d"
-        Title="Jarvis" MinHeight="450" MinWidth="800" Height="450" Width="800">
+        Title="Jarvis" MinHeight="450" MinWidth="750" Height="450" Width="780">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="155" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -32,14 +33,18 @@
         </Menu>
 
         <!-- Greeting label -->
-        <TextBlock x:Name="GreetingLabel" Text="Jarvis" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-40,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
+        <TextBlock x:Name="GreetingLabel" Text="Jarvis" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
 
         <!-- Recognized label -->
-        <TextBlock x:Name="RecognizedLabel" Text="Recognized" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-170,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
+        <TextBlock x:Name="RecognizedLabel" Text="Recognized" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,-223,0" FontFamily="Times New Roman" FontSize="30" FontWeight="Bold" />
 
         <!-- Recognized text -->
-        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="2" Padding="1" Background="#FFF5F5F5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,0,0,0" Width="610">
-        <TextBox x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="600" Height="300" Margin="5,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="2" Padding="1" Background="#FFF5F5F5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,0,0,0" Width="600">
+            <TextBox x:Name="RecognizedText" Text="" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="25px" FontFamily="Times New Roman" VerticalAlignment="Top" HorizontalAlignment="Left" Width="585" Height="285" Margin="5,5,5,5" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" />
         </Border>
+
+        <!-- Service buttons -->
+        <Button Content="Скрыть в трей" Click="Hide_Window_Click" Width="130" Height="30" Grid.Column="4" Grid.Row="3" VerticalAlignment="Top" FontSize="18" FontFamily="Times New Roman" />
+        <Button Content="Очистить поле" Click="Clear_Recognized_TextBlock_Click" Width="130" Height="30" Grid.Column="4" Grid.Row="3" VerticalAlignment="Top" FontSize="18" FontFamily="Times New Roman" Margin="0,50,0,0" />
     </Grid>
 </Window>

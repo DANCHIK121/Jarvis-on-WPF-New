@@ -72,7 +72,10 @@ namespace Jarvis_on_WPF
         }
 
         private void Close_Window_Click(object sender, RoutedEventArgs e) => Close();
+        private void Hide_Window_Click(object sender, RoutedEventArgs e) => this.Hide();
         private void Exit_Program_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
+        private void Clear_Recognized_TextBlock_Click(object sender, RoutedEventArgs e) => RecognizedText.Text = "";
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) { e.Cancel = true; this.Hide(); }
 
         private void UpdateTextBlockAsync(string text)
         {

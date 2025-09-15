@@ -36,3 +36,4 @@ E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.
 E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.genruntimeconfig.cache
 E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\ref\Jarvis on WPF New.dll
 E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New.sourcelink.json
+E:\Programming\.cs\Projects\Jarvis on WPF New\Jarvis on WPF New\obj\Debug\net10.0-windows10.0.26100.0\Jarvis on WPF New_Content.g.cs

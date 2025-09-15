@@ -8,7 +8,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <StartupObject>Jarvis_on_WPF_New.App</StartupObject>
+    <ApplicationIcon>bin\Debug\net10.0-windows10.0.26100.0\Icon\Icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net10.0-windows10.0.26100.0\Icon\Icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />

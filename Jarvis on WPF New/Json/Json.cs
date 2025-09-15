@@ -22,6 +22,7 @@ namespace Jarvis_on_WPF.Json
         public int? BufferMilliseconds { get; set; }
         public int? NumberOfBuffers { get; set; }
         public int? SilenceTimerTimeoutInMilliSeconds { get; set; }
+        public int? EpochCount { get; set; }
     }
     #endregion
 

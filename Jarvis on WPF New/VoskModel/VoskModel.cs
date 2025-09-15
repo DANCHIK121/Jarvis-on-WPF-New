@@ -32,8 +32,8 @@ namespace Jarvis_on_WPF_New.VoskModel
 
         private static StringBuilder? currentText;
 
-        // Play Jarvis responses
-        private static Audio? _audioJarvisResponses;
+        // Execute command
+        private static VoskModelCommandExecution? _executeCommand;
 
         // Json classes
         private readonly IJson _json;
@@ -94,7 +94,7 @@ namespace Jarvis_on_WPF_New.VoskModel
             _voskModelDownloadTimer = new Stopwatch();
 
             // Init Jarvis responses 
-            _audioJarvisResponses = new Audio();
+            _executeCommand = new VoskModelCommandExecution();
 
             // Init wave capture
             _waveIn = new WaveInEvent()
@@ -302,8 +302,10 @@ namespace Jarvis_on_WPF_New.VoskModel
                     {
                         // Send final text
                         _voskModelEventsForTextChattingInThreads!.PublishText($"\n🎯 ФИНАЛЬНО: {result.text}");
-                        VoskModelCommandExecution.Execute(result.text);
+                        _executeCommand!.Execute(result.text);
                         currentText!.Clear();
+                        result.text = "";
+                        _recognizer!.Reset();
                     }
                 }
                 else
