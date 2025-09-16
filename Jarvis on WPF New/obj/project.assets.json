@@ -2,6 +2,178 @@
   "version": 3,
   "targets": {
     "net10.0-windows10.0.26100": {
+      "Microsoft.ML/4.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.ML.CpuMath": "4.0.2",
+          "Microsoft.ML.DataView": "4.0.2",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.ML.Core.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.Data.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.KMeansClustering.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.PCA.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.StandardTrainers.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.Transforms.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.ML.Core.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.Data.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.KMeansClustering.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.PCA.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.StandardTrainers.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/Microsoft.ML.Transforms.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/netstandard2.0/Microsoft.ML.props": {},
+          "build/netstandard2.0/Microsoft.ML.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libLdaNative.so": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm/native/libLdaNative.so.dbg": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/libLdaNative.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-arm64/native/libLdaNative.so.dbg": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-x64/native/libLdaNative.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x64/native/libLdaNative.so.dbg": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-arm64/native/libLdaNative.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-arm64/native/libLdaNative.dylib.dwarf": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/libLdaNative.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/osx-x64/native/libLdaNative.dylib.dwarf": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-arm64/native/LdaNative.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/native/LdaNative.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/LdaNative.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "Microsoft.ML.CpuMath/4.0.2": {
+        "type": "package",
+        "dependencies": {
+          "System.Numerics.Tensors": "8.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Microsoft.ML.CpuMath.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.ML.CpuMath.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/netstandard2.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-x64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-arm64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-arm64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/nativeassets/net6.0/_._": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "Microsoft.ML.DataView/4.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Microsoft.ML.DataView.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.ML.DataView.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "NAudio/2.2.1": {
         "type": "package",
         "dependencies": {
@@ -132,6 +304,22 @@
           }
         }
       },
+      "System.Numerics.Tensors/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.Numerics.Tensors.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Numerics.Tensors.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
       "Vosk/0.3.38": {
         "type": "package",
         "compile": {
@@ -147,6 +335,97 @@
     }
   },
   "libraries": {
+    "Microsoft.ML/4.0.2": {
+      "sha512": "qY2VXqDTPB2QdVf344dT1XBisIQOIKmaRxIvgu1YUA9XRxv5mvnwuOxxlCJEBO106wIf9oFk8xsllMnlzbpRlQ==",
+      "type": "package",
+      "path": "microsoft.ml/4.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "build/netstandard2.0/Microsoft.ML.props",
+        "build/netstandard2.0/Microsoft.ML.targets",
+        "lib/netstandard2.0/Microsoft.ML.Core.dll",
+        "lib/netstandard2.0/Microsoft.ML.Core.xml",
+        "lib/netstandard2.0/Microsoft.ML.Data.dll",
+        "lib/netstandard2.0/Microsoft.ML.Data.xml",
+        "lib/netstandard2.0/Microsoft.ML.KMeansClustering.dll",
+        "lib/netstandard2.0/Microsoft.ML.KMeansClustering.xml",
+        "lib/netstandard2.0/Microsoft.ML.PCA.dll",
+        "lib/netstandard2.0/Microsoft.ML.PCA.xml",
+        "lib/netstandard2.0/Microsoft.ML.StandardTrainers.dll",
+        "lib/netstandard2.0/Microsoft.ML.StandardTrainers.xml",
+        "lib/netstandard2.0/Microsoft.ML.Transforms.dll",
+        "lib/netstandard2.0/Microsoft.ML.Transforms.xml",
+        "microsoft.ml.4.0.2.nupkg.sha512",
+        "microsoft.ml.nuspec",
+        "mlnetlogo.png",
+        "runtimes/linux-arm/native/libLdaNative.so",
+        "runtimes/linux-arm/native/libLdaNative.so.dbg",
+        "runtimes/linux-arm64/native/libLdaNative.so",
+        "runtimes/linux-arm64/native/libLdaNative.so.dbg",
+        "runtimes/linux-x64/native/libLdaNative.so",
+        "runtimes/linux-x64/native/libLdaNative.so.dbg",
+        "runtimes/osx-arm64/native/libLdaNative.dylib",
+        "runtimes/osx-arm64/native/libLdaNative.dylib.dwarf",
+        "runtimes/osx-x64/native/libLdaNative.dylib",
+        "runtimes/osx-x64/native/libLdaNative.dylib.dwarf",
+        "runtimes/win-arm64/native/LdaNative.dll",
+        "runtimes/win-x64/native/LdaNative.dll",
+        "runtimes/win-x86/native/LdaNative.dll"
+      ]
+    },
+    "Microsoft.ML.CpuMath/4.0.2": {
+      "sha512": "NMbatQ0tNRnMTB4u/hpNWlx9n9lDRRa220Vx78pXloy7Keiwv130SC7AnQyXwveeg6DUOIgk/qUuH3I6MLaD1w==",
+      "type": "package",
+      "path": "microsoft.ml.cpumath/4.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "THIRD-PARTY-NOTICES.TXT",
+        "build/netstandard2.0/Microsoft.ML.CpuMath.props",
+        "lib/net6.0/Microsoft.ML.CpuMath.dll",
+        "lib/net6.0/Microsoft.ML.CpuMath.xml",
+        "lib/netstandard2.0/Microsoft.ML.CpuMath.dll",
+        "lib/netstandard2.0/Microsoft.ML.CpuMath.xml",
+        "microsoft.ml.cpumath.4.0.2.nupkg.sha512",
+        "microsoft.ml.cpumath.nuspec",
+        "mlnetlogo.png",
+        "runtimes/linux-arm/nativeassets/net6.0/_._",
+        "runtimes/linux-arm64/nativeassets/net6.0/_._",
+        "runtimes/linux-x64/nativeassets/net6.0/_._",
+        "runtimes/linux-x64/nativeassets/netstandard2.0/libCpuMathNative.so",
+        "runtimes/linux-x64/nativeassets/netstandard2.0/libCpuMathNative.so.dbg",
+        "runtimes/osx-arm64/nativeassets/net6.0/_._",
+        "runtimes/osx-x64/nativeassets/net6.0/_._",
+        "runtimes/osx-x64/nativeassets/netstandard2.0/libCpuMathNative.dylib",
+        "runtimes/osx-x64/nativeassets/netstandard2.0/libCpuMathNative.dylib.dwarf",
+        "runtimes/win-arm64/nativeassets/net6.0/_._",
+        "runtimes/win-x64/nativeassets/net6.0/_._",
+        "runtimes/win-x64/nativeassets/netstandard2.0/CpuMathNative.dll",
+        "runtimes/win-x86/nativeassets/net6.0/_._",
+        "runtimes/win-x86/nativeassets/netstandard2.0/CpuMathNative.dll"
+      ]
+    },
+    "Microsoft.ML.DataView/4.0.2": {
+      "sha512": "k8q9UwoCG5WpwnvPS3s46yNU+wkMgAC5F/8OELpPbozcyJw0DZL8WnpnL/mw7E218Ec4SpYz+nxL9P87eAdzmg==",
+      "type": "package",
+      "path": "microsoft.ml.dataview/4.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/netstandard2.0/Microsoft.ML.DataView.dll",
+        "lib/netstandard2.0/Microsoft.ML.DataView.xml",
+        "microsoft.ml.dataview.4.0.2.nupkg.sha512",
+        "microsoft.ml.dataview.nuspec",
+        "mlnetlogo.png"
+      ]
+    },
     "NAudio/2.2.1": {
       "sha512": "c0DzwiyyklM0TP39Y7RObwO3QkWecgM6H60ikiEnsV/aEAJPbj5MFCLaD8BSfKuZe0HGuh9GRGWWlJmSxDc9MA==",
       "type": "package",
@@ -287,6 +566,36 @@
         "packageIcon.png"
       ]
     },
+    "System.Numerics.Tensors/8.0.0": {
+      "sha512": "fhODzTe9ON9IzmRfyVeA6L8yXOciMtpq1YufkRVBliggcVKZE+XDxqIn46+yF4PWR6wNPuDpXtPpuY86VcKxUA==",
+      "type": "package",
+      "path": "system.numerics.tensors/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Numerics.Tensors.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Numerics.Tensors.targets",
+        "lib/net462/System.Numerics.Tensors.dll",
+        "lib/net462/System.Numerics.Tensors.xml",
+        "lib/net6.0/System.Numerics.Tensors.dll",
+        "lib/net6.0/System.Numerics.Tensors.xml",
+        "lib/net7.0/System.Numerics.Tensors.dll",
+        "lib/net7.0/System.Numerics.Tensors.xml",
+        "lib/net8.0/System.Numerics.Tensors.dll",
+        "lib/net8.0/System.Numerics.Tensors.xml",
+        "lib/netstandard2.0/System.Numerics.Tensors.dll",
+        "lib/netstandard2.0/System.Numerics.Tensors.xml",
+        "system.numerics.tensors.8.0.0.nupkg.sha512",
+        "system.numerics.tensors.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Vosk/0.3.38": {
       "sha512": "W/me6nwF7fq9uWVmqbmWvPx3DjhMSzb9D85IZa0FUg2PIxcWjfG55vYHBc+9xCuNL/zohIBRYTKiP4itnMU3ww==",
       "type": "package",
@@ -309,6 +618,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0-windows10.0.26100": [
+      "Microsoft.ML >= 4.0.2",
       "NAudio >= 2.2.1",
       "Newtonsoft.Json >= 13.0.3",
       "Vosk >= 0.3.38"
@@ -365,6 +675,10 @@
       "net10.0-windows10.0.26100": {
         "targetAlias": "net10.0-windows10.0.26100.0",
         "dependencies": {
+          "Microsoft.ML": {
+            "target": "Package",
+            "version": "[4.0.2, )"
+          },
           "NAudio": {
             "target": "Package",
             "version": "[2.2.1, )"

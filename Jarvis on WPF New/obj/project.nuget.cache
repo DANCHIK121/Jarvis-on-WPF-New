@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "4hSeguzLDIE=",
+  "dgSpecHash": "8Dvm+vbsHpc=",
   "success": true,
   "projectFilePath": "E:\\Programming\\.cs\\Projects\\Jarvis on WPF New\\Jarvis on WPF New\\Jarvis on WPF New.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\bahar\\.nuget\\packages\\microsoft.ml\\4.0.2\\microsoft.ml.4.0.2.nupkg.sha512",
+    "C:\\Users\\bahar\\.nuget\\packages\\microsoft.ml.cpumath\\4.0.2\\microsoft.ml.cpumath.4.0.2.nupkg.sha512",
+    "C:\\Users\\bahar\\.nuget\\packages\\microsoft.ml.dataview\\4.0.2\\microsoft.ml.dataview.4.0.2.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\naudio\\2.2.1\\naudio.2.2.1.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\naudio.asio\\2.2.1\\naudio.asio.2.2.1.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\naudio.core\\2.2.1\\naudio.core.2.2.1.nupkg.sha512",
@@ -12,6 +15,7 @@
     "C:\\Users\\bahar\\.nuget\\packages\\naudio.winforms\\2.2.1\\naudio.winforms.2.2.1.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\naudio.winmm\\2.2.1\\naudio.winmm.2.2.1.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\bahar\\.nuget\\packages\\system.numerics.tensors\\8.0.0\\system.numerics.tensors.8.0.0.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\vosk\\0.3.38\\vosk.0.3.38.nupkg.sha512",
     "C:\\Users\\bahar\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
   ],

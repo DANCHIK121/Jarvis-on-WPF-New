@@ -2,5 +2,6 @@
 {
     internal interface IPerceptron
     {
+        public void ContextAnalyze(string input);
     }
 }

@@ -1,18 +1,12 @@
-﻿// Standart usings
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows;
 using System.Diagnostics;
-
-// Installed usings
 using Vosk;
 using NAudio.Wave;
 using Newtonsoft.Json;
-
-// Project usings
 using Jarvis_on_WPF.Json;
-using Jarvis_on_WPF.JarvisAudioResponses;
-
+using Jarvis_on_WPF_New.Perceptron;
 
 namespace Jarvis_on_WPF_New.VoskModel
 {
@@ -20,20 +14,20 @@ namespace Jarvis_on_WPF_New.VoskModel
     {
         // Vosk
         private string _modelPath;
-        private static Model? _model;
-        private static VoskRecognizer? _recognizer;
+        private Model _model;
+        private VoskRecognizer _recognizer;
 
         // Get audio from microphone
-        private static WaveInEvent? _waveIn;
+        private WaveInEvent _waveIn;
 
         // Diagnostic tools
-        private static Stopwatch? _silenceTimer;
-        private static Stopwatch? _voskModelDownloadTimer;
+        private Stopwatch _silenceTimer;
+        private Stopwatch _voskModelDownloadTimer;
 
-        private static StringBuilder? currentText;
+        private StringBuilder currentText;
 
         // Execute command
-        private static VoskModelCommandExecution? _executeCommand;
+        private VoskModelCommandExecution _executeCommand;
 
         // Json classes
         private readonly IJson _json;
@@ -44,135 +38,164 @@ namespace Jarvis_on_WPF_New.VoskModel
         private readonly ProgramConstsClass _constsClass;
 
         // Event publisher
-        private VoskModelEventsForNews? _voskModelNewsPublisher;
-        private VoskModelEventsForTextChattingInThreads? _voskModelEventsForTextChattingInThreads;
+        private VoskModelEventsForNews _voskModelNewsPublisher;
+        private VoskModelEventsForTextChattingInThreads _voskModelEventsForTextChattingInThreads;
+
+        // Neural context network
+        private IPerceptron? _perceptron;
 
         public VoskModel()
         {
-            currentText = new StringBuilder();
-
-            // Init events handler
-            _voskModelNewsPublisher = new VoskModelEventsForNews();
-            _voskModelEventsForTextChattingInThreads = new VoskModelEventsForTextChattingInThreads();
-
-            // Path consts
-            _jsonWithPathConsts = new JsonClass
+            try
             {
-                FilePath = JsonClass._jsonFileWithPathConsts,
-            };
+                currentText = new StringBuilder();
 
-            // Programm consts
-            _json = new JsonClass
-            {
-                FilePath = JsonClass._jsonFileWithProgramConsts,
-            };
+                // Init events handler
+                _voskModelNewsPublisher = new VoskModelEventsForNews();
+                _voskModelEventsForTextChattingInThreads = new VoskModelEventsForTextChattingInThreads();
 
-            // Deserialized class with path consts
-            _pathsClass = new PathsClass(); // Path const class
-            _pathsClass = _jsonWithPathConsts.ReadJson<PathsClass>(); // Reading data from json file
+                // Path consts
+                _jsonWithPathConsts = new JsonClass
+                {
+                    FilePath = JsonClass._jsonFileWithPathConsts,
+                };
 
-            // Deserialized class with programm consts
-            _constsClass = new ProgramConstsClass(); // Programm const class
-            _constsClass = _json.ReadJson<ProgramConstsClass>(); // Reading data from json file
+                // Programm consts
+                _json = new JsonClass
+                {
+                    FilePath = JsonClass._jsonFileWithProgramConsts,
+                };
 
-            // Vosk model
-            _modelPath = string.Empty;
+                // Deserialized class with path consts
+                _pathsClass = _jsonWithPathConsts.ReadJson<PathsClass>();
 
-            // Select vosk model path
-            switch (_constsClass.AccurateRecognitionMode!)
-            {
-                case true:
-                    _modelPath = _pathsClass.PathConsts![0].AccurateModelPathConst!;
-                    break;
-                case false:
-                    _modelPath = _pathsClass.PathConsts![0].NotAccurateModelPathConst!;
-                    break;
+                // Deserialized class with programm consts
+                _constsClass = _json.ReadJson<ProgramConstsClass>();
+
+                // Vosk model path
+                _modelPath = _constsClass!.AccurateRecognitionMode! == true
+                    ? _pathsClass!.PathConsts[0]!.AccurateModelPathConst!
+                    : _pathsClass!.PathConsts[0]!.NotAccurateModelPathConst!;
+
+                // Diagnostic
+                _silenceTimer = new Stopwatch();
+                _voskModelDownloadTimer = new Stopwatch();
+
+                // Init Jarvis responses 
+                _executeCommand = new VoskModelCommandExecution();
+
+                // Init wave capture (но не запускаем сразу)
+                _waveIn = new WaveInEvent()
+                {
+                    WaveFormat = new WaveFormat((int)_constsClass.SampleRate!, 1),
+                    BufferMilliseconds = (int)_constsClass.BufferMilliseconds!,
+                    NumberOfBuffers = (int)_constsClass.NumberOfBuffers!,
+                };
+
+                // Neural context network - ИНИЦИАЛИЗИРУЕМ ПОЗЖЕ
+                _perceptron = null; // Отложенная инициализация
+
+                // Write listened data to result string
+                _waveIn.DataAvailable += WaveIn_DataAvailable!;
+
+                if (_constsClass.DebugMode == true)
+                {
+                    _waveIn.RecordingStopped += (s, e) => _voskModelNewsPublisher.PublishNews("Запись остановлена");
+                }
             }
-
-            // Diagnostic
-            _silenceTimer = new Stopwatch();
-            _voskModelDownloadTimer = new Stopwatch();
-
-            // Init Jarvis responses 
-            _executeCommand = new VoskModelCommandExecution();
-
-            // Init wave capture
-            _waveIn = new WaveInEvent()
+            catch (Exception ex)
             {
-                WaveFormat = new WaveFormat((int)_constsClass.SampleRate!, 1),
-                BufferMilliseconds = (int)_constsClass.BufferMilliseconds!,
-                NumberOfBuffers = (int)_constsClass.NumberOfBuffers!,
-            };
+                MessageBox.Show($"Ошибка инициализации VoskModel: {ex.Message}");
+                throw;
+            }
+        }
 
-            // Write listened data to result string
-            _waveIn.DataAvailable += WaveIn_DataAvailable!;
-            if (_constsClass!.DebugMode == true)
+        public void InitializePerceptron()
+        {
+            // Инициализируем перцептрон только когда нужно
+            if (_perceptron == null)
             {
-                _waveIn.RecordingStopped += (s, e) => _voskModelNewsPublisher.PublishNews("Запись остановлена");
+                _perceptron = new Perceptron.Perceptron();
             }
         }
 
         ~VoskModel()
         {
-            // Cleanup
-            _waveIn?.StopRecording();
-            _waveIn?.Dispose();
-            _recognizer?.Dispose();
-            _model?.Dispose();
-            if (_constsClass.DebugMode! == true)
-                _voskModelNewsPublisher!.PublishNews("Ресурсы освобождены. Выход.");
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            try
+            {
+                _waveIn?.StopRecording();
+                _waveIn?.Dispose();
+                _recognizer?.Dispose();
+                _model?.Dispose();
+
+                if (_constsClass?.DebugMode == true)
+                    _voskModelNewsPublisher?.PublishNews("Ресурсы освобождены. Выход.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка при очистке: {ex.Message}");
+            }
         }
 
         public ref VoskModelEventsForNews GetVoskModelEventsForNews
         {
-            get { return ref _voskModelNewsPublisher!; }
+            get { return ref _voskModelNewsPublisher; }
         }
 
         public ref VoskModelEventsForTextChattingInThreads GetVoskModelEventsForTextChattingInThreads
         {
-            get { return ref _voskModelEventsForTextChattingInThreads!; }
+            get { return ref _voskModelEventsForTextChattingInThreads; }
         }
 
         public void DownloadModel()
         {
-            // Check vock model exists in path
-            if (!Directory.Exists(_modelPath))
+            try
             {
-                if (_constsClass.DebugMode! == true)
+                // Check vock model exists in path
+                if (!Directory.Exists(_modelPath))
                 {
-                    var temp = string.Empty;
+                    if (_constsClass.DebugMode == true)
+                    {
+                        var temp = (bool)_constsClass.AccurateRecognitionMode!
+                            ? _constsClass.AccurateRecognitionModelName
+                            : _constsClass.NotAccurateRecognitionModelName;
 
-                    if (_constsClass.AccurateRecognitionMode! == true)
-                        temp = _constsClass.AccurateRecognitionModelName!;
-                    if (_constsClass.AccurateRecognitionMode! == false)
-                        temp = _constsClass.NotAccurateRecognitionModelName!;
+                        var resultString = ($"Ошибка: Модель не найдена по пути: {_modelPath}\n" +
+                                            $"Убедитесь, что модель {temp} скачана и распакована\n" +
+                                            $"Скачайте её с сайта {_constsClass.URLForDownloadVoskModel}");
 
-                    var resultString = ($"Ошибка: Модель не найдена по пути: {_modelPath}\n" +
-                                        $"Убедитесь, что модель {temp} скачана и распакована\n" +
-                                        $"Скачайте её с сайта {_constsClass.URLForDownloadVoskModel!}");
-
-                    _voskModelNewsPublisher!.PublishNews(resultString);
-                    MessageBox.Show(resultString);
+                        _voskModelNewsPublisher.PublishNews(resultString);
+                        MessageBox.Show(resultString);
+                    }
+                    return;
                 }
-                return;
+
+                // Model not downloaded
+                _voskModelNewsPublisher.PublishNews("Начата загрузка модели.");
+                _voskModelDownloadTimer.Start();
+
+                // Init Vosk model
+                _model = new Model(_modelPath);
+                _recognizer = new VoskRecognizer(_model, 16000.0f);
+
+                // Model downloaded
+                _voskModelDownloadTimer.Stop();
+                _voskModelNewsPublisher.PublishNews("Модель загружена.");
+
+                // Calculate elapsed time
+                if (_constsClass.DebugMode == true)
+                {
+                    _voskModelNewsPublisher.PublishNews($"Модель загрузилась за {_voskModelDownloadTimer.ElapsedMilliseconds / 1000} секунд.");
+                }
             }
-
-            // Model not downloaded
-            _voskModelNewsPublisher!.PublishNews("Начата загрузка модели.");
-            _voskModelDownloadTimer?.Start();
-
-            // Init Vosk model
-            _model = new Model(_modelPath);
-            _recognizer = new VoskRecognizer(_model, 16000.0f);
-
-            // Model downloaded
-            _voskModelDownloadTimer?.Stop();
-            _voskModelNewsPublisher!.PublishNews("Модель загружена.");
-
-            // Calculate elapsed time
-            if (_constsClass.DebugMode! == true)
+            catch (Exception ex)
             {
-                _voskModelNewsPublisher!.PublishNews($"Модель загрузилась за {_voskModelDownloadTimer?.ElapsedMilliseconds / 1000} секунд.");
+                MessageBox.Show($"Ошибка загрузки модели: {ex.Message}");
             }
         }
 
@@ -182,35 +205,38 @@ namespace Jarvis_on_WPF_New.VoskModel
             {
                 if (_model == null || _recognizer == null)
                 {
-                    _voskModelEventsForTextChattingInThreads!.PublishText("❌ Модель не загружена!");
+                    _voskModelEventsForTextChattingInThreads.PublishText("❌ Модель не загружена!");
                     return;
                 }
+
+                // Инициализируем перцептрон при начале прослушивания
+                InitializePerceptron();
 
                 // Count wave in devices
                 int waveInDevices = WaveInEvent.DeviceCount;
 
-                _voskModelEventsForTextChattingInThreads!.PublishText("=== Jarvis Speech Recognition ===");
+                _voskModelEventsForTextChattingInThreads.PublishText("=== Jarvis Speech Recognition ===");
 
-                if (_constsClass.DebugMode! == true)
+                if (_constsClass.DebugMode == true)
                 {
-                    _voskModelNewsPublisher!.PublishNews($"Настройка микрофона...\nДоступных аудиоустройств: {waveInDevices}");
+                    _voskModelNewsPublisher.PublishNews($"Настройка микрофона...\nДоступных аудиоустройств: {waveInDevices}");
 
                     for (int i = 0; i < waveInDevices; i++)
                     {
                         var capabilities = WaveInEvent.GetCapabilities(i);
-                        _voskModelNewsPublisher!.PublishNews($"Устройство {i}: {capabilities.ProductName}");
+                        _voskModelNewsPublisher.PublishNews($"Устройство {i}: {capabilities.ProductName}");
                     }
 
                     if (waveInDevices == 0)
                     {
-                        _voskModelEventsForTextChattingInThreads!.PublishText("❌ Микрофон не найден!");
+                        _voskModelEventsForTextChattingInThreads.PublishText("❌ Микрофон не найден!");
                         return;
                     }
                 }
 
                 // Start recording
                 _voskModelEventsForTextChattingInThreads.PublishText("🎤 Начинаю запись... Говорите!");
-                _waveIn!.StartRecording();
+                _waveIn.StartRecording();
 
                 _voskModelEventsForTextChattingInThreads.PublishText("\n⚡ Режимы работы:");
                 _voskModelEventsForTextChattingInThreads.PublishText("• Говорите четко в микрофон");
@@ -220,32 +246,25 @@ namespace Jarvis_on_WPF_New.VoskModel
                 while (true)
                 {
                     // Check silence timer in main loop
-                    if (_silenceTimer!.IsRunning && _silenceTimer!.ElapsedMilliseconds > _constsClass.SilenceTimerTimeoutInMilliSeconds!)
+                    if (_silenceTimer.IsRunning && _silenceTimer.ElapsedMilliseconds > _constsClass.SilenceTimerTimeoutInMilliSeconds)
                     {
                         FinalizeRecognition();
-                        _silenceTimer!.Restart();
+                        _silenceTimer.Restart();
                     }
 
                     Thread.Sleep(100);
                 }
-
             }
             catch (Exception ex)
             {
                 // Print critical error
-                _voskModelEventsForTextChattingInThreads!.PublishText($"❌ Критическая ошибка!");
-                if (_constsClass.DebugMode! == true)
-                    _voskModelNewsPublisher!.PublishNews($"StackTrace: {ex.StackTrace}");
+                _voskModelEventsForTextChattingInThreads.PublishText($"❌ Критическая ошибка!");
+                if (_constsClass.DebugMode == true)
+                    _voskModelNewsPublisher.PublishNews($"StackTrace: {ex.StackTrace}");
             }
             finally
             {
-                // Cleanup
-                _waveIn?.StopRecording();
-                _waveIn?.Dispose();
-                _recognizer?.Dispose();
-                _model?.Dispose();
-                if (_constsClass.DebugMode! == true)
-                    _voskModelNewsPublisher!.PublishNews("Ресурсы освобождены. Выход.");
+                Cleanup();
             }
         }
 
@@ -258,16 +277,16 @@ namespace Jarvis_on_WPF_New.VoskModel
                 if (!IsAudioLoudEnough(processedAudio))
                 {
                     // Silence - start timer
-                    if (!_silenceTimer!.IsRunning)
+                    if (!_silenceTimer.IsRunning)
                         _silenceTimer.Start();
                     return;
                 }
 
                 // Sound - reset timer
-                _silenceTimer!.Restart();
+                _silenceTimer.Restart();
 
                 // Send audio to recognizer
-                if (_recognizer!.AcceptWaveform(processedAudio, processedAudio.Length))
+                if (_recognizer.AcceptWaveform(processedAudio, processedAudio.Length))
                 {
                     // Get final result
                     string resultJson = _recognizer.Result();
@@ -282,8 +301,8 @@ namespace Jarvis_on_WPF_New.VoskModel
             }
             catch (Exception ex)
             {
-                if (_constsClass!.DebugMode == true) _voskModelNewsPublisher!.PublishNews($"Ошибка обработки аудио: {ex.Message}");
-                MessageBox.Show($"Ошибка обработки аудио: {ex.Message}");
+                if (_constsClass.DebugMode == true)
+                    _voskModelNewsPublisher.PublishNews($"Ошибка обработки аудио: {ex.Message}");
             }
         }
 
@@ -301,11 +320,16 @@ namespace Jarvis_on_WPF_New.VoskModel
                     if (!string.IsNullOrEmpty(result?.text))
                     {
                         // Send final text
-                        _voskModelEventsForTextChattingInThreads!.PublishText($"\n🎯 ФИНАЛЬНО: {result.text}");
-                        _executeCommand!.Execute(result.text);
-                        currentText!.Clear();
-                        result.text = "";
-                        _recognizer!.Reset();
+                        _voskModelEventsForTextChattingInThreads.PublishText($"\n🎯 ФИНАЛЬНО: {result.text}");
+
+                        // Используем перцептрон для анализа
+                        if (_perceptron != null)
+                        {
+                            _perceptron.ContextAnalyze(result.text);
+                        }
+
+                        currentText.Clear();
+                        _recognizer.Reset();
                     }
                 }
                 else
@@ -314,15 +338,14 @@ namespace Jarvis_on_WPF_New.VoskModel
                     if (!string.IsNullOrEmpty(result?.partial))
                     {
                         // Send partial text
-                        _voskModelEventsForTextChattingInThreads!.PublishText($"\r🔍 Распознаю: {result.partial}");
+                        _voskModelEventsForTextChattingInThreads.PublishText($"\r🔍 Распознаю: {result.partial}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (_constsClass.DebugMode! == true)
-                    _voskModelNewsPublisher!.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
-                MessageBox.Show($"Ошибка парсинга JSON: {ex.Message}");
+                if (_constsClass.DebugMode == true)
+                    _voskModelNewsPublisher.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
             }
         }
 
@@ -331,18 +354,18 @@ namespace Jarvis_on_WPF_New.VoskModel
             try
             {
                 // Forced get final result
-                string finalResult = _recognizer!.FinalResult();
+                string finalResult = _recognizer.FinalResult();
                 ProcessResult(finalResult, isFinal: true);
 
                 // Reset recognizer
                 _recognizer.Reset();
 
-                _voskModelEventsForTextChattingInThreads!.PublishText("\n--- Готов к новой фразе ---");
+                _voskModelEventsForTextChattingInThreads.PublishText("\n--- Готов к новой фразе ---");
             }
             catch (Exception ex)
             {
-                if (_constsClass.DebugMode! == true)
-                    _voskModelNewsPublisher!.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
+                if (_constsClass.DebugMode == true)
+                    _voskModelNewsPublisher.PublishNews($"Ошибка парсинга JSON: {ex.Message}");
             }
         }
     }

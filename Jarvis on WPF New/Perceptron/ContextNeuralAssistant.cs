@@ -1,13 +1,14 @@
 ﻿// Project usings
 using Jarvis_on_WPF.Json;
+using Jarvis_on_WPF_New.VoskModel;
 
 namespace Jarvis_on_WPF_New.Perceptron
 {
     public class ContextNeuralAssistant
     {
-        // Neural classes
-        private NeuralNetwork network;
-        private TextProcessor textProcessor;
+        // ML and Vosk variables
+        private MLCommandClassifier _mlClassifier;
+        private VoskModelCommandExecution _voskModelCommandExecution;
 
         // Json classes
         private readonly IJson _jsonWithProgramConsts;
@@ -15,9 +16,17 @@ namespace Jarvis_on_WPF_New.Perceptron
         // Objects for deserialization
         private readonly ProgramConstsClass _programConstsClass;
 
+        // Vosk model
+        private VoskModel.IVoskModel _voskModel;
+
+        // Event publisher
+        private VoskModelEventsForNews? _voskModelNewsPublisher;
+
         public ContextNeuralAssistant()
         {
-            // Initialize classes
+            _mlClassifier = new MLCommandClassifier();
+            _voskModelCommandExecution = new VoskModelCommandExecution();
+
             // Programm consts
             _jsonWithProgramConsts = new JsonClass
             {
@@ -28,62 +37,33 @@ namespace Jarvis_on_WPF_New.Perceptron
             _programConstsClass = new ProgramConstsClass(); // Programm const class
             _programConstsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
-            textProcessor = new TextProcessor();
-            network = new NeuralNetwork(
-                textProcessor.GetVocabularySize(),
-                textProcessor.GetCommandCount()
-            );
+            // Init vosk
+            _voskModel = new VoskModel.VoskModel();
 
-            TrainNetwork();
-        }
+            // Init event
+            _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
 
-        private void TrainNetwork()
-        {
-            // Training examples
-            var trainingData = new[]
-            {
-                ("хочу смотреть видео", "open_browser"),
-                ("открой браузер", "open_browser"),
-                ("открой ютуб", "open_browser"),
-                ("найди в интернете", "search_web"),
-                ("поиск информации", "search_web"),
-                ("какая погода", "weather"),
-                ("включи музыку", "play_music")
-            };
-
-            // Train
-            foreach (var (text, command) in trainingData)
-            {
-                var input = textProcessor.TextToVector(text);
-                var target = textProcessor.GetTargetVector(command);
-
-                for (int i = 0; i < _programConstsClass.EpochCount!; i++) // Epoch count
-                {
-                    network.Train(input, target, 0.1);
-                }
-            }
+            // Test model in class initialization
+            _mlClassifier.TestModel();
         }
 
         public string ProcessCommand(string userInput)
         {
-            var inputVector = textProcessor.TextToVector(userInput);
-            var output = network.Forward(inputVector);
-            var command = textProcessor.GetCommandFromOutput(output);
+            var command = _mlClassifier.PredictCommand(userInput);
 
-            return ExecuteCommand(command, userInput);
+            // Command execution
+            _voskModelCommandExecution.Execute(command);
+
+            return command;
         }
 
-        private string ExecuteCommand(string command, string input)
+        // Method for add new examples for training
+        public void AddTrainingExample(string text, string command)
         {
-            return command switch
+            if (_programConstsClass.DebugMode! == true)
             {
-                "open_browser" => input.Contains("youtube") ?
-                    "Запускаю YouTube!" : "Открываю браузер!",
-                "search_web" => "Ищу в интернете...",
-                "weather" => "Погода: солнечно, +20°C",
-                "play_music" => "Включаю музыку!",
-                _ => "Не понял команду"
-            };
+                _voskModelNewsPublisher!.PublishNews($"Добавлен пример: '{text}' -> '{command}'");
+            }
         }
     }
 }

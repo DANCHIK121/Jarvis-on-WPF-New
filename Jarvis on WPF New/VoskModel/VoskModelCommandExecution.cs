@@ -21,9 +21,10 @@ namespace Jarvis_on_WPF_New.VoskModel
 
             switch (command)
             {
-                case "выход":
+                case "program_exit":
                     _jarvisAudioResponses!.Play();
-                    // Environment.Exit(0);
+                    Thread.Sleep(3000);
+                    Environment.Exit(0);
                     break;
             }
         }
