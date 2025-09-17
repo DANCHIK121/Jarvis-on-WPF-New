@@ -2,7 +2,7 @@
 using Microsoft.ML;
 
 // Project usings
-using Jarvis_on_WPF.Json;
+using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.VoskModel;
 using System.Windows;
 
@@ -28,47 +28,6 @@ namespace Jarvis_on_WPF_New.Perceptron
         private PredictionEngine<CommandData, CommandPrediction>? _predictionEngine;
         private IDataView? _trainingDataView;
 
-        // Create data for training
-        private List<CommandData> _trainingData = new List<CommandData>
-        {
-            // Open Browser
-            new CommandData { Text = "хочу смотреть видео", Label = "open_browser" },
-            new CommandData { Text = "открой браузер", Label = "open_browser" },
-            new CommandData { Text = "открой ютуб", Label = "open_browser" },
-            new CommandData { Text = "видео", Label = "open_browser" },
-            new CommandData { Text = "хочу видео", Label = "open_browser" },
-            new CommandData { Text = "смотреть видео", Label = "open_browser" },
-
-            // Search Web
-            new CommandData { Text = "найди в интернете", Label = "search_web" },
-            new CommandData { Text = "поиск информации", Label = "search_web" },
-            new CommandData { Text = "поиск данных", Label = "search_web" },
-            new CommandData { Text = "открой поисковик", Label = "search_web" },
-            new CommandData { Text = "поисковик", Label = "search_web" },
-            new CommandData { Text = "яндекс", Label = "search_web" },
-
-            // Weather
-            new CommandData { Text = "какая погода", Label = "weather" },
-            new CommandData { Text = "погода", Label = "weather" },
-            new CommandData { Text = "погода на завтра", Label = "weather" },
-            new CommandData { Text = "посмотреть погоду", Label = "weather" },
-            new CommandData { Text = "актуальная погода", Label = "weather" },
-
-            // Play Music
-            new CommandData { Text = "включи музыку", Label = "play_music" },
-            new CommandData { Text = "музыка", Label = "play_music" },
-            new CommandData { Text = "включи плеер", Label = "play_music" },
-            new CommandData { Text = "хочу слушать музыку", Label = "play_music" },
-            new CommandData { Text = "включи аудио", Label = "play_music" },
-
-            // Program Exit
-            new CommandData { Text = "выйти", Label = "program_exit" },
-            new CommandData { Text = "хватит", Label = "program_exit" },
-            new CommandData { Text = "закрой программу", Label = "program_exit" },
-            new CommandData { Text = "выключись", Label = "program_exit" },
-            new CommandData { Text = "стоп", Label = "program_exit" }
-        };
-
         public MLCommandClassifier()
         {
             // Programm consts
@@ -81,7 +40,7 @@ namespace Jarvis_on_WPF_New.Perceptron
             _programConstsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>();
 
             // Init vosk
-            _voskModel = new VoskModel.VoskModel();
+            _voskModel = new VoskModel.VoskModelClass();
 
             // Init event
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
@@ -104,7 +63,7 @@ namespace Jarvis_on_WPF_New.Perceptron
         {
             // Init ML context with seed
             _mlContext = new MLContext(seed: 0);
-            _trainingDataView = _mlContext.Data.LoadFromEnumerable(_trainingData);
+            _trainingDataView = _mlContext.Data.LoadFromEnumerable(Commands._trainingData);
         }
 
         private void TrainModel()
@@ -191,7 +150,7 @@ namespace Jarvis_on_WPF_New.Perceptron
                 else
                 {
                     // Fallback to simple pattern matching
-                    return PredictCommandFallback(userInput);
+                    return Commands.PredictCommandFallback(userInput);
                 }
             }
             catch (Exception ex)
@@ -199,27 +158,8 @@ namespace Jarvis_on_WPF_New.Perceptron
                 if (_programConstsClass.DebugMode == true)
                     _voskModelNewsPublisher?.PublishNews($"Ошибка предсказания: {ex.Message}");
 
-                return PredictCommandFallback(userInput);
+                return Commands.PredictCommandFallback(userInput);
             }
-        }
-
-        private string PredictCommandFallback(string userInput)
-        {
-            userInput = userInput.ToLower();
-
-            // Simple pattern matching as fallback
-            if (userInput.Contains("ютуб") || userInput.Contains("видео") || userInput.Contains("браузер"))
-                return "open_browser";
-            else if (userInput.Contains("поиск") || userInput.Contains("найди") || userInput.Contains("интернет"))
-                return "search_web";
-            else if (userInput.Contains("погода"))
-                return "weather";
-            else if (userInput.Contains("музык") || userInput.Contains("плеер") || userInput.Contains("аудио"))
-                return "play_music";
-            else if (userInput.Contains("выйти") || userInput.Contains("хватит") || userInput.Contains("стоп"))
-                return "program_exit";
-            else
-                return "unknown";
         }
 
         public void TestModel()
@@ -227,19 +167,7 @@ namespace Jarvis_on_WPF_New.Perceptron
             if (_programConstsClass.DebugMode == true)
                 _voskModelNewsPublisher?.PublishNews("=== ТЕСТИРОВАНИЕ МОДЕЛИ ===");
 
-            var testCases = new[]
-            {
-                "открой ютуб",
-                "какая погода сегодня",
-                "включи музыку пожалуйста",
-                "выйти из программы",
-                "найди информацию о машинах",
-                "стоп",
-                "хватит работать",
-                "погода в москве"
-            };
-
-            foreach (var testCase in testCases)
+            foreach (var testCase in Commands.testCases)
             {
                 var result = PredictCommand(testCase);
                 if (_programConstsClass.DebugMode == true)

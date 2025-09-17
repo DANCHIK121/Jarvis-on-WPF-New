@@ -2,12 +2,14 @@
 using System.Media;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Jarvis_on_WPF.JarvisAudioResponses
+namespace Jarvis_on_WPF_New.JarvisAudioResponses
 {
     public enum AudioModes
     {
-        YesSer,
         Default,
+
+        YesSer,
+        YesSerSecond,
         JarvisGoodbye,
         JarvisGreeting
     }
@@ -73,6 +75,10 @@ namespace Jarvis_on_WPF.JarvisAudioResponses
 
                 case AudioModes.YesSer:
                     _filePath = @"./Audio/Да сэр.wav";
+                    break;
+
+                case AudioModes.YesSerSecond:
+                    _filePath = @"./Audio/Да сэр(второй).wav";
                     break;
 
                 case AudioModes.Default:

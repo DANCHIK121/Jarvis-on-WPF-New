@@ -1,21 +1,27 @@
-﻿using System.IO;
+﻿// Standart usings
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Diagnostics;
+
+// Installed usings
 using Vosk;
 using NAudio.Wave;
 using Newtonsoft.Json;
-using Jarvis_on_WPF.Json;
+
+// Project usings
+using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.Perceptron;
+using Jarvis_on_WPF_New.CommandsExecution;
 
 namespace Jarvis_on_WPF_New.VoskModel
 {
-    partial class VoskModel : IVoskModel
+    partial class VoskModelClass : IVoskModel
     {
         // Vosk
         private string _modelPath;
-        private Model _model;
-        private VoskRecognizer _recognizer;
+        private Model? _model;
+        private VoskRecognizer? _recognizer;
 
         // Get audio from microphone
         private WaveInEvent _waveIn;
@@ -25,9 +31,6 @@ namespace Jarvis_on_WPF_New.VoskModel
         private Stopwatch _voskModelDownloadTimer;
 
         private StringBuilder currentText;
-
-        // Execute command
-        private VoskModelCommandExecution _executeCommand;
 
         // Json classes
         private readonly IJson _json;
@@ -44,7 +47,7 @@ namespace Jarvis_on_WPF_New.VoskModel
         // Neural context network
         private IPerceptron? _perceptron;
 
-        public VoskModel()
+        public VoskModelClass()
         {
             try
             {
@@ -74,15 +77,12 @@ namespace Jarvis_on_WPF_New.VoskModel
 
                 // Vosk model path
                 _modelPath = _constsClass!.AccurateRecognitionMode! == true
-                    ? _pathsClass!.PathConsts[0]!.AccurateModelPathConst!
-                    : _pathsClass!.PathConsts[0]!.NotAccurateModelPathConst!;
+                    ? _pathsClass!.PathConsts![0]!.AccurateModelPathConst!
+                    : _pathsClass!.PathConsts![0]!.NotAccurateModelPathConst!;
 
                 // Diagnostic
                 _silenceTimer = new Stopwatch();
                 _voskModelDownloadTimer = new Stopwatch();
-
-                // Init Jarvis responses 
-                _executeCommand = new VoskModelCommandExecution();
 
                 // Init wave capture (но не запускаем сразу)
                 _waveIn = new WaveInEvent()
@@ -119,7 +119,7 @@ namespace Jarvis_on_WPF_New.VoskModel
             }
         }
 
-        ~VoskModel()
+        ~VoskModelClass()
         {
             Cleanup();
         }
@@ -286,7 +286,7 @@ namespace Jarvis_on_WPF_New.VoskModel
                 _silenceTimer.Restart();
 
                 // Send audio to recognizer
-                if (_recognizer.AcceptWaveform(processedAudio, processedAudio.Length))
+                if (_recognizer!.AcceptWaveform(processedAudio, processedAudio.Length))
                 {
                     // Get final result
                     string resultJson = _recognizer.Result();
@@ -329,7 +329,7 @@ namespace Jarvis_on_WPF_New.VoskModel
                         }
 
                         currentText.Clear();
-                        _recognizer.Reset();
+                        _recognizer!.Reset();
                     }
                 }
                 else
@@ -354,7 +354,7 @@ namespace Jarvis_on_WPF_New.VoskModel
             try
             {
                 // Forced get final result
-                string finalResult = _recognizer.FinalResult();
+                string finalResult = _recognizer!.FinalResult();
                 ProcessResult(finalResult, isFinal: true);
 
                 // Reset recognizer

@@ -1,5 +1,6 @@
 ﻿// Project usings
-using Jarvis_on_WPF.Json;
+using Jarvis_on_WPF_New.CommandsExecution;
+using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.VoskModel;
 
 namespace Jarvis_on_WPF_New.Perceptron
@@ -38,7 +39,7 @@ namespace Jarvis_on_WPF_New.Perceptron
             _programConstsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
             // Init vosk
-            _voskModel = new VoskModel.VoskModel();
+            _voskModel = new VoskModel.VoskModelClass();
 
             // Init event
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
@@ -52,7 +53,7 @@ namespace Jarvis_on_WPF_New.Perceptron
             var command = _mlClassifier.PredictCommand(userInput);
 
             // Command execution
-            _voskModelCommandExecution.Execute(command);
+            _voskModelCommandExecution.Execute(Commands.CommandsConvertDictionary[command]);
 
             return command;
         }

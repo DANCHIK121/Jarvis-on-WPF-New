@@ -1,4 +1,4 @@
-﻿namespace Jarvis_on_WPF.JarvisAudioResponses
+﻿namespace Jarvis_on_WPF_New.JarvisAudioResponses
 {
     public interface IAudio
     {

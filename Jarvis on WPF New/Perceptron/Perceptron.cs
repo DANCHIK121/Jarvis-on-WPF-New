@@ -1,7 +1,6 @@
 ﻿// Project usings
-using Jarvis_on_WPF.Json;
+using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.VoskModel;
-using System.Windows;
 
 namespace Jarvis_on_WPF_New.Perceptron
 { 
@@ -32,7 +31,7 @@ namespace Jarvis_on_WPF_New.Perceptron
             _programConstsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
             // Init vosk
-            _voskModel = new VoskModel.VoskModel();
+            _voskModel = new VoskModel.VoskModelClass();
 
             // Init event
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
@@ -43,8 +42,6 @@ namespace Jarvis_on_WPF_New.Perceptron
             ContextNeuralAssistant assistant = new ContextNeuralAssistant();
 
             string command = assistant.ProcessCommand(input);
-
-            MessageBox.Show(command);
 
             if (_programConstsClass.DebugMode! == true)
                 _voskModelNewsPublisher!.PublishNews($"Выполнена команда: {command}");

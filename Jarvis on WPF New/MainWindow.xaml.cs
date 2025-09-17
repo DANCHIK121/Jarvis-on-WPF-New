@@ -1,10 +1,11 @@
 ﻿// Standart usings
-using Jarvis_on_WPF.Json;
-// Project usings
-using Jarvis_on_WPF_New.VoskModel;
 using System.Windows;
 
-namespace Jarvis_on_WPF
+// Project usings
+using Jarvis_on_WPF_New.Json;
+using Jarvis_on_WPF_New.VoskModel;
+
+namespace Jarvis_on_WPF_New
 {
     public partial class MainWindow : Window
     {
@@ -36,7 +37,7 @@ namespace Jarvis_on_WPF
             _constsClass = _jsonForProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
             // Init vosk model
-            _voskModel = new VoskModel();
+            _voskModel = new VoskModelClass();
 
             // Init VoskModelEventsForNews
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;

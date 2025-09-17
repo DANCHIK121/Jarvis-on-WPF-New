@@ -1,6 +1,6 @@
 ﻿namespace Jarvis_on_WPF_New.VoskModel
 {
-    partial class VoskModel
+    partial class VoskModelClass
     {
         private static byte[] EnhanceAudioQuality(byte[] buffer, int length)
         {

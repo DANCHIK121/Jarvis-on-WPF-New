@@ -1,4 +1,4 @@
-﻿namespace Jarvis_on_WPF.Json
+﻿namespace Jarvis_on_WPF_New.Json
 {
     internal interface IJson
     {

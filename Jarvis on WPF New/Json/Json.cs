@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 
-namespace Jarvis_on_WPF.Json
+namespace Jarvis_on_WPF_New.Json
 {
     #region Programm Consts
     // Program consts
