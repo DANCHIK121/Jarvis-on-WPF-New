@@ -4,6 +4,7 @@ using System.Windows;
 // Project usings
 using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.VoskModel;
+using Jarvis_on_WPF_New.JarvisAudioResponses;
 
 namespace Jarvis_on_WPF_New
 {
@@ -12,12 +13,15 @@ namespace Jarvis_on_WPF_New
         // Vosk model
         private IVoskModel? _voskModel;
 
+        // Json audio responses
+        private readonly IAudio? _jarvisAudioResponses;
+
         // Event publisher
         private VoskModelEventsForNews? _voskModelNewsPublisher;
         private VoskModelEventsForTextChattingInThreads? _voskModelEventsForTextChattingInThreads;
 
         // Json classes
-        private readonly IJson _jsonForProgramConsts;
+        private readonly IJson _jsonWithProgramConsts;
 
         // Objects for deserialization
         private readonly ProgramConstsClass _constsClass;
@@ -27,14 +31,14 @@ namespace Jarvis_on_WPF_New
             InitializeComponent();
 
             // Programm consts
-            _jsonForProgramConsts = new JsonClass
+            _jsonWithProgramConsts = new JsonClass
             {
                 FilePath = JsonClass._jsonFileWithProgramConsts,
             };
 
             // Deserialized class with programm consts
             _constsClass = new ProgramConstsClass(); // Programm const class
-            _constsClass = _jsonForProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
+            _constsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
 
             // Init vosk model
             _voskModel = new VoskModelClass();
@@ -42,6 +46,10 @@ namespace Jarvis_on_WPF_New
             // Init VoskModelEventsForNews
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
             _voskModelEventsForTextChattingInThreads = _voskModel.GetVoskModelEventsForTextChattingInThreads;
+
+            // Jarvis audio responses
+            _jarvisAudioResponses = new Audio(AudioModes.JarvisGreeting);
+            _jarvisAudioResponses.Play();
 
             // Update TextBlock
             Thread thread = new Thread(() =>

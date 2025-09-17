@@ -77,8 +77,8 @@ namespace Jarvis_on_WPF_New.VoskModel
 
                 // Vosk model path
                 _modelPath = _constsClass!.AccurateRecognitionMode! == true
-                    ? _pathsClass!.PathConsts![0]!.AccurateModelPathConst!
-                    : _pathsClass!.PathConsts![0]!.NotAccurateModelPathConst!;
+                    ? _pathsClass!.AccurateModelPathConst!
+                    : _pathsClass!.NotAccurateModelPathConst!;
 
                 // Diagnostic
                 _silenceTimer = new Stopwatch();
@@ -92,8 +92,8 @@ namespace Jarvis_on_WPF_New.VoskModel
                     NumberOfBuffers = (int)_constsClass.NumberOfBuffers!,
                 };
 
-                // Neural context network - ИНИЦИАЛИЗИРУЕМ ПОЗЖЕ
-                _perceptron = null; // Отложенная инициализация
+                // Neural context network
+                _perceptron = null;
 
                 // Write listened data to result string
                 _waveIn.DataAvailable += WaveIn_DataAvailable!;

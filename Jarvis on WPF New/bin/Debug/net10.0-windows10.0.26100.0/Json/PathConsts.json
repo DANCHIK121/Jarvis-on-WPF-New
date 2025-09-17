@@ -1,10 +1,6 @@
 {
-  "PathConsts": 
-  [
-    {
-      "DataJsonPathConst": "./Json/ProgramConsts.json",
-      "AccurateModelPathConst": "./Vosk_models/vosk-model-ru-0.42",
-      "NotAccurateModelPathConst": "./Vosk_models/vosk-model-small-ru-0.22/vosk-model-small-ru-0.22"
-    }
-  ]
+  "DataJsonPathConst": "./Json/ProgramConsts.json",
+  "AccurateModelPathConst": "./Vosk_models/vosk-model-ru-0.42",
+  "NotAccurateModelPathConst": "./Vosk_models/vosk-model-small-ru-0.22/vosk-model-small-ru-0.22",
+  "YandexBrowserPath": "C:\\Users\\bahar\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe"
 }

@@ -27,17 +27,11 @@ namespace Jarvis_on_WPF_New.Json
 
     #region PathConsts
     // Path Consts
-    class PathConstsClass
+    class PathsClass
     {
         public string? DataJsonPathConst { get; set; }
         public string? AccurateModelPathConst { get; set; }
         public string? NotAccurateModelPathConst { get; set; }
-    }
-
-    // Main serialization class
-    class PathsClass
-    {
-        public List<PathConstsClass>? PathConsts { get; set; }
     }
     #endregion
 

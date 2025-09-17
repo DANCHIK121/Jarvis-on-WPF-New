@@ -6,6 +6,8 @@ using Jarvis_on_WPF_New.Json;
 using Jarvis_on_WPF_New.VoskModel;
 using Jarvis_on_WPF_New.Perceptron;
 using Jarvis_on_WPF_New.JarvisAudioResponses;
+using Jarvis_on_WPF_New.CommandsExecution.FilesForCommands.PCStates;
+using Jarvis_on_WPF_New.CommandsExecution.FilesForCommands.OpenPrograms;
 using Jarvis_on_WPF_New.CommandsExecution.FilesForCommands.MinimizeWindows;
 
 namespace Jarvis_on_WPF_New.CommandsExecution
@@ -28,8 +30,15 @@ namespace Jarvis_on_WPF_New.CommandsExecution
         private VoskModelEventsForNews? _voskModelNewsPublisher;
         private VoskModelEventsForTextChattingInThreads? _voskModelEventsForTextChattingInThreads;
 
+        // Command execution classes
         // Windows Manager
         private readonly IMinimizeWindows? _minimizeWindows;
+
+        // PCStates
+        private readonly IPCStates? _pcStates;
+
+        // OpenPrograms
+        private readonly IOpenPrograms? _openPrograms;
 
         public VoskModelCommandExecution()
         {
@@ -52,8 +61,15 @@ namespace Jarvis_on_WPF_New.CommandsExecution
             _voskModelNewsPublisher = _voskModel.GetVoskModelEventsForNews;
             _voskModelEventsForTextChattingInThreads = _voskModel.GetVoskModelEventsForTextChattingInThreads;
 
+            // Command execution classes
             // Windows Manager
             _minimizeWindows = new MinimizeWindows();
+
+            // PCStates
+            _pcStates = new PCStates();
+
+            // OpenPrograms
+            _openPrograms = new OpenPrograms();
         }
 
         public void Execute(CommandsEnum command)
@@ -81,12 +97,24 @@ namespace Jarvis_on_WPF_New.CommandsExecution
                         if (_programConstsClass!.DebugMode! == true)
                             _voskModelNewsPublisher!.PublishNews($"Ошибка: {ex.Message}");
                     }
-                    
+                    break;
+
+                case CommandsEnum.SearchWeb:
+                    _openPrograms!.OpenBrowserWithUrl();
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSer;
+                    _jarvisAudioResponses!.Play();
+                    break;
+
+                case CommandsEnum.Sleep:
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.PowerOff;
+                    _jarvisAudioResponses!.Play();
+                    Thread.Sleep(3000);
+                    _pcStates!.EnterSleepMode(_voskModelNewsPublisher);
                     break;
 
                 case CommandsEnum.MinimizeWindows:
                     _minimizeWindows!.MinimizeAllWindows();
-                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSerSecond;
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.Invisible;
                     _jarvisAudioResponses!.Play();
                     break;
 
@@ -101,7 +129,6 @@ namespace Jarvis_on_WPF_New.CommandsExecution
                     _jarvisAudioResponses!.Play();
                     Thread.Sleep(3000);
                     Environment.Exit(0);
-
                     break;
             }
         }

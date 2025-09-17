@@ -9,9 +9,11 @@ namespace Jarvis_on_WPF_New.JarvisAudioResponses
         Default,
 
         YesSer,
+        PowerOff,
+        Invisible,
         YesSerSecond,
         JarvisGoodbye,
-        JarvisGreeting
+        JarvisGreeting,
     }
 
     [SuppressMessage("Interoperability", "CA1416:Проверка совместимости платформы")]
@@ -67,6 +69,14 @@ namespace Jarvis_on_WPF_New.JarvisAudioResponses
             {
                 case AudioModes.JarvisGreeting:
                     _filePath = @"./Audio/Джарвис - приветствие.wav";
+                    break;
+
+                case AudioModes.Invisible:
+                    _filePath = @"./Audio/Да, это поможет вам оставаться незамеченным.wav";
+                    break;
+
+                case AudioModes.PowerOff:
+                    _filePath = @"./Audio/Отключаю питание.wav";
                     break;
 
                 case AudioModes.JarvisGoodbye:
