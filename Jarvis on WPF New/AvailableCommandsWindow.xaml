@@ -1,0 +1,53 @@
+﻿<Window x:Class="Jarvis_on_WPF_New.AvailableCommandsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Jarvis_on_WPF_New"
+        mc:Ignorable="d"
+        Title="Jarvis" MinHeight="450" MinWidth="900" Height="450" Width="900">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        
+        <!-- Top menu -->
+        <Menu Height="25" Grid.Row="0" Grid.ColumnSpan="10">
+            <MenuItem Header="Приложение" FontSize="20px" FontFamily="Times New Roman" >
+                <MenuItem x:Name="Exit_Program" x:FieldModifier="public" Header="Выход" Click="Exit_Program_Click" FontSize="15px" FontFamily="Times new Roman" />
+                <MenuItem x:Name="Close_Window" x:FieldModifier="public" Header="Закрыть окно" Click="Close_Window_Click" FontSize="15px" FontFamily="Times new Roman" />
+            </MenuItem>
+        </Menu>
+        
+        <!-- Commands -->
+        <TextBlock x:Name="CommandsLabel" Text="" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="11" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,0,0,0" FontFamily="Times New Roman" FontSize="30"/>
+        <TextBlock x:Name="SecondCommandsLabel" Text="" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="11" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,0,0,0" FontFamily="Times New Roman" FontSize="30"/>
+
+        <!-- Service buttons -->
+        <Button Content="Назад" Click="" Width="430" Height="30" Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="3" VerticalAlignment="Top" FontSize="18" FontFamily="Times New Roman" />
+        <Button Content="Дальше" Click="" Width="430" Height="30" Grid.Column="3" Grid.Row="11" Grid.ColumnSpan="3" VerticalAlignment="Top" FontSize="18" FontFamily="Times New Roman" />
+    </Grid>
+</Window>

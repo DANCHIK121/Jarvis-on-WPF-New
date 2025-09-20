@@ -17,6 +17,8 @@
         MinimizeWindows,
 
         CloseAllWindows,
+
+        OpenVideoHostingWebSite,
     }
 
     internal static class Commands
@@ -32,18 +34,27 @@
             ["program_exit"] = CommandsEnum.ProgramExit,
             ["minimize_windows"] = CommandsEnum.MinimizeWindows,
             ["close_all_windows"] = CommandsEnum.CloseAllWindows,
+            ["open_video_hosting_website"] = CommandsEnum.OpenVideoHostingWebSite,
         };
 
         // Create data for training
         public static List<CommandData> _trainingData = new List<CommandData>
         {
+            // Open video hosting website
+            new CommandData { Text = "видео", Label = "open_video_hosting_website" },
+            new CommandData { Text = "хочу видео", Label = "open_video_hosting_website" },
+            new CommandData { Text = "смотреть видео", Label = "open_video_hosting_website" },
+            new CommandData { Text = "открой видеосервис", Label = "open_video_hosting_website" },
+            new CommandData { Text = "открой видео сервис", Label = "open_video_hosting_website" },
+            new CommandData { Text = "хочу смотреть видео", Label = "open_video_hosting_website" },
+
             // Open Browser
-            new CommandData { Text = "видео", Label = "open_browser" },
-            new CommandData { Text = "хочу видео", Label = "open_browser" },
-            new CommandData { Text = "открой ютуб", Label = "open_browser" },
-            new CommandData { Text = "смотреть видео", Label = "open_browser" },
             new CommandData { Text = "открой браузер", Label = "open_browser" },
-            new CommandData { Text = "хочу смотреть видео", Label = "open_browser" },
+            new CommandData { Text = "выйди в интернет", Label = "open_browser" },
+            new CommandData { Text = "включи мне интернет", Label = "open_browser" },
+            new CommandData { Text = "мне нужно кое-что погуглить", Label = "open_browser" },
+            new CommandData { Text = "запусти, пожалуйста, мой браузер", Label = "open_browser" },
+            new CommandData { Text = "распахни окно во всемирную паутину", Label = "open_browser" },
 
             // Search Web
             new CommandData { Text = "яндекс", Label = "search_web" },
@@ -60,7 +71,6 @@
             new CommandData { Text = "посмотреть погоду", Label = "weather" },
             new CommandData { Text = "актуальная погода", Label = "weather" },
             new CommandData { Text = "завтрашняя погода", Label = "weather" },
-
 
             // Play Music
             new CommandData { Text = "музыка", Label = "play_music" },
@@ -80,7 +90,6 @@
             new CommandData { Text = "закрой программу", Label = "program_exit" },
             
             // Minimize windows
-            
             new CommandData { Text = "скрой окна", Label = "minimize_windows" },
             new CommandData { Text = "сверни окна", Label = "minimize_windows" },
             new CommandData { Text = "спрячь окна", Label = "minimize_windows" },
@@ -111,10 +120,15 @@
         public static string[] testCases = new[]
         {
             // Open browser
-            "открой ютуб",
+            "открой браузер",
+            "выйди в интернет",
+
+            // Open video hosting website
+            "видео",
+            "хочу смотреть видео",
 
             // Weather
-            "погода в москве",
+            "погода в городе",
             "какая погода сегодня",
 
             // Play music
@@ -148,10 +162,13 @@
             userInput = userInput.ToLower();
 
             // Simple pattern matching as fallback
-
             // Open browser
-            if (userInput.Contains("ютуб") || userInput.Contains("видео") || userInput.Contains("браузер"))
+            if (userInput.Contains("браузер") || userInput.Contains("интернет") || userInput.Contains("всемирная сеть"))
                 return "open_browser";
+
+            // Open video hosting website
+            if (userInput.Contains("видео") || userInput.Contains("смотреть видео") || userInput.Contains("хочу смотреть видео"))
+                return "open_video_hosting_website";
 
             // Search web
             else if (userInput.Contains("поиск") || userInput.Contains("найди") || userInput.Contains("интернет"))

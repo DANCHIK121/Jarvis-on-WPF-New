@@ -99,8 +99,26 @@ namespace Jarvis_on_WPF_New.CommandsExecution
                     }
                     break;
 
+                case CommandsEnum.OpenBrowser:
+                    _openPrograms!.OpenBrowser(_voskModelNewsPublisher, false, "");
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSer;
+                    _jarvisAudioResponses!.Play();
+                    break;
+
+                case CommandsEnum.Weather:
+                    _openPrograms!.OpenBrowser(_voskModelNewsPublisher, true, _programConstsClass!.DefaultWebsiteWithWeather!);
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSer;
+                    _jarvisAudioResponses!.Play();
+                    break;
+
+                case CommandsEnum.OpenVideoHostingWebSite:
+                    _openPrograms!.OpenBrowser(_voskModelNewsPublisher, true, _programConstsClass!.DefaultVideoHosting!);
+                    _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSer;
+                    _jarvisAudioResponses!.Play();
+                    break;
+
                 case CommandsEnum.SearchWeb:
-                    _openPrograms!.OpenBrowserWithUrl();
+                    _openPrograms!.OpenBrowser(_voskModelNewsPublisher, true, "");
                     _jarvisAudioResponses!.ChangeAudioMode = AudioModes.YesSer;
                     _jarvisAudioResponses!.Play();
                     break;

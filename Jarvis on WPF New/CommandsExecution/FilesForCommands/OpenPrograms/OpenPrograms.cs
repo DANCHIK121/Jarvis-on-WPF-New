@@ -3,19 +3,53 @@ using System.IO;
 using Microsoft.Win32;
 using System.Diagnostics;
 
+// Project usings
+using Jarvis_on_WPF_New.Json;
+using Jarvis_on_WPF_New.VoskModel;
+
 namespace Jarvis_on_WPF_New.CommandsExecution.FilesForCommands.OpenPrograms
 {
     class OpenPrograms : IOpenPrograms
     {
-        public void OpenBrowserWithUrl(string url = "https://yandex.ru")
+        // Json classes
+        private readonly IJson _jsonWithProgramConsts;
+
+        // Objects for deserialization
+        private readonly ProgramConstsClass _constsClass;
+
+        public OpenPrograms()
+        {
+            // Programm consts
+            _jsonWithProgramConsts = new JsonClass
+            {
+                FilePath = JsonClass._jsonFileWithProgramConsts,
+            };
+
+            // Deserialized class with programm consts
+            _constsClass = new ProgramConstsClass(); // Programm const class
+            _constsClass = _jsonWithProgramConsts.ReadJson<ProgramConstsClass>(); // Reading data from json file
+        }
+
+        public void OpenBrowser(VoskModelEventsForNews? voskModelEventsForNews, bool openWithURL, string url = "")
         {
             try
             {
-                Process.Start(GetYandexBrowserPathFromRegistry()!, url);
+                if (!openWithURL)
+                    Process.Start(GetYandexBrowserPathFromRegistry()!);
+                if (openWithURL)
+                {
+                    if (!string.IsNullOrEmpty(url))
+                        Process.Start(GetYandexBrowserPathFromRegistry()!, url);
+                    else
+                        Process.Start(GetYandexBrowserPathFromRegistry()!, _constsClass.DefaultSearchEngine!);
+                }
             }
             catch (Exception ex)
             {
-                // Console.WriteLine($"Ошибка: {ex.Message}");
+                if (_constsClass.DebugMode! == true)
+                {
+                    voskModelEventsForNews!.PublishNews($"Ошибка: {ex.Message}");
+                }
             }
         }
 

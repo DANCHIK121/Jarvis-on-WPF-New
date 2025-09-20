@@ -30,6 +30,10 @@
                 <MenuItem x:Name="Exit_Program" x:FieldModifier="public" Header="Выход" Click="Exit_Program_Click" FontSize="15px" FontFamily="Times new Roman" />
                 <MenuItem x:Name="Close_Window" x:FieldModifier="public" Header="Закрыть окно" Click="Close_Window_Click" FontSize="15px" FontFamily="Times new Roman" />
             </MenuItem>
+
+            <MenuItem Header="Доступные команды" FontSize="20px" FontFamily="Times New Roman" >
+                <MenuItem x:Name="OpenAvailableCommandsWindowMenuItem" x:FieldModifier="public" Header="Посмотреть" Click="OpenAvailableCommandsWindow" FontSize="15px" FontFamily="Times new Roman" />
+            </MenuItem>
         </Menu>
 
         <!-- Greeting label -->
